@@ -27,7 +27,7 @@ function App() {
           <h2 style={{ color: '#ff4a4a' }}>❌ {error}</h2>
         ) : (
           <>
-            <h2 style={{ color: '#4caf50' }}>✅ {status.message}</h2>
+            <h2 style={{ color: '#4caf50' }}>✅✅ {status.message}</h2>
             <p style={{ fontSize: '1.2rem' }}>
               Prueba de base de datos (1+1): <strong>{status.db_test}</strong>
             </p>
