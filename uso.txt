@@ -1,0 +1,3 @@
+para ejecutar: docker-compose up 
+para detener: docker-compose down
+para reconstruir: docker-compose up --build
