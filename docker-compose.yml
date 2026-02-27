@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  # 1. Base de datos (MySQL)
+  db:
+    image: mysql:8.0
+    container_name: mysql_db2
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: appdb
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: apppassword
+    ports:
+      - "3308:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  # 2. Servidor Backend (Node + Express)
+  backend:
+    build: ./backend
+    container_name: node_backend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: db
+      DB_USER: appuser
+      DB_PASSWORD: apppassword
+      DB_NAME: appdb
+      PORT: 3000
+    depends_on:
+      - db
+    # Volumen para desarrollo: refleja los cambios sin tener que reconstruir la imagen
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  # 3. Servidor Frontend (React)
+  frontend:
+    build: ./frontend
+    container_name: react_frontend
+    restart: always
+    ports:
+      - "5173:5173"
+    environment:
+      # Para que Vite observe los archivos correctamente en Windows/Docker
+      WATCHPACK_POLLING: "true" 
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+# Definición del volumen persistente para la BD
+volumes:
+  db_data:
