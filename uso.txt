@@ -4,3 +4,11 @@
 para ejecutar: docker-compose up 
 para detener: docker-compose down
 para reconstruir: docker-compose up --build
+
+
+// Quite las lo de git ignero porque lo que queria probar en otra maquina 
+node_modules
+dist
+.env
+.DS_Store
+mysql-data
