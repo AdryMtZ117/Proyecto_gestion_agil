@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import './App.css';
 import App2_ModuloAlumnos from './App2_ModuloAlumnos';
+import App3_FINANZAS_A from './App3_FINANZAS_A';
 
 // --- ESTE ES TU MENÚ PRINCIPAL ---
 function PaginaPrincipal() {
@@ -31,7 +32,12 @@ function PaginaPrincipal() {
                     
                     <li><i className="fas fa-calendar-check"></i><span>Asistencias</span></li>
                     <li><i className="fas fa-book"></i><span>Clases</span></li>
-                    <li><i className="fas fa-piggy-bank"></i><span>Finanzas</span></li>
+                    
+
+                    <li onClick={() => navigate('/Finanzas')}>
+                        <i className="fas fa-piggy-bank"></i><span>Finanzas</span>
+                    </li>
+
                     <li><i className="fas fa-chart-bar"></i><span>Reportes</span></li>
                 </ul>
             </nav>
@@ -87,6 +93,7 @@ function App() {
         <Routes>
             <Route path="/" element={<PaginaPrincipal />} />
             <Route path="/alumnos" element={<App2_ModuloAlumnos />} />
+            <Route path="/Finanzas" element={<App3_FINANZAS_A />} />
         </Routes>
     );
 }
