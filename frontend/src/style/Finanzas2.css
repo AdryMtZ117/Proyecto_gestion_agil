@@ -1,0 +1,224 @@
+/* src/style/Finanzas2.css */
+
+.finanzas2-layout {
+    background-color: #ffffff;
+    border-radius: 30px;
+    margin: 20px;
+    padding: 40px;
+    flex: 1;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+/* --- HEADER --- */
+.finanzas2-layout .top-bar-finanzas2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.finanzas2-layout .section-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #111;
+    margin: 0;
+}
+
+.finanzas2-layout .btn-back-simple {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #555;
+}
+
+/* --- FORMULARIO SUPERIOR --- */
+.finanzas2-layout .gastos-form-section {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+}
+
+.finanzas2-layout .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.finanzas2-layout .form-group label {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #111;
+}
+
+.finanzas2-layout .custom-select-gastos {
+    position: relative;
+    border: 1px solid #777;
+    background-color: white;
+    padding: 8px 10px;
+    width: 200px;
+}
+
+.finanzas2-layout .custom-select-gastos select {
+    border: none;
+    outline: none;
+    width: 100%;
+    appearance: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.finanzas2-layout .custom-select-gastos i {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    pointer-events: none;
+}
+
+.finanzas2-layout .input-monto-gastos {
+    border: 1px solid #777;
+    padding: 8px 10px;
+    font-size: 16px;
+    width: 150px;
+    outline: none;
+}
+
+.finanzas2-layout .btn-upload-ticket {
+    background-color: #d1e97c; /* Verde pistache */
+    color: #111;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* --- GRID INFERIOR (Calendario + Tabla) --- */
+.finanzas2-layout .gastos-grid {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 40px;
+}
+
+.finanzas2-layout .column-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* --- CALENDARIO VERDE --- */
+.finanzas2-layout .mock-calendar-green {
+    background-color: #eafab1; /* Verde súper clarito */
+    border-radius: 20px;
+    padding: 20px;
+    color: #222;
+}
+
+.finanzas2-layout .cal-subtitle { font-size: 12px; margin: 0 0 5px 0; }
+
+.finanzas2-layout .cal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.finanzas2-layout .cal-header h4 { margin: 0; font-size: 24px; font-weight: 500; }
+
+.finanzas2-layout .cal-month-nav {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.finanzas2-layout .cal-arrows i { margin-left: 15px; cursor: pointer; }
+
+.finanzas2-layout .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    gap: 5px;
+}
+
+.finanzas2-layout .weekdays span { font-size: 12px; color: #666; margin-bottom: 10px; }
+
+.finanzas2-layout .days span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+    margin: auto;
+    border-radius: 50%;
+}
+
+.finanzas2-layout .current-day { border: 1px solid #5a5eb9; color: #5a5eb9; }
+.finanzas2-layout .selected-day { background-color: #5a5eb9; color: white; }
+
+.finanzas2-layout .cal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #5a5eb9;
+    font-weight: 600;
+}
+
+/* --- TABLA (Limpia sin bordes azules) --- */
+.finanzas2-layout .search-bar-gastos {
+    display: flex;
+    align-items: center;
+    border: 1px solid #777;
+    border-radius: 8px;
+    padding: 10px 15px;
+    width: 300px;
+    margin-bottom: 20px;
+}
+
+.finanzas2-layout .search-bar-gastos input {
+    border: none;
+    outline: none;
+    margin-left: 10px;
+    width: 100%;
+}
+
+.finanzas2-layout .gastos-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.finanzas2-layout .gastos-table th {
+    background-color: #eafab1; /* Verde pálido */
+    text-align: left;
+    padding: 15px;
+    font-weight: 600;
+}
+
+.finanzas2-layout .gastos-table td {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.finanzas2-layout .btn-descargar {
+    background: none;
+    border: none;
+    color: #555;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.finanzas2-layout .btn-descargar:hover { text-decoration: underline; }

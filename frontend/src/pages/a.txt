@@ -1,0 +1,103 @@
+import React, { useEffect } from 'react';
+import { Chart } from 'chart.js/auto'; // Asegúrate de tener chart.js instalado
+
+function Dashboard() {
+    
+    useEffect(() => {
+        // Configuración del gráfico (Ingresos vs Gastos)
+        const ctx = document.getElementById('myChart');
+        const myChart = new Chart(ctx, {
+            type: 'bar', // Puedes cambiarlo a 'line' si prefieres
+            data: {
+                labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
+                datasets: [{
+                    label: 'Ingresos',
+                    data: [1200, 1900, 1500, 2700],
+                    backgroundColor: '#a3cf62', // Color lila/verde de tu tema
+                }, {
+                    label: 'Gastos',
+                    data: [500, 800, 400, 600],
+                    backgroundColor: '#e9ecef',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        return () => myChart.destroy(); // Limpiar al desmontar
+    }, []);
+
+    return (
+        <main className="main-content p-4">
+            {/* Cabecera con estadísticas rápidas (Bootstrap Cards) */}
+            <header className="top-bar mb-4">
+                <div className="row g-3">
+                    <div className="col-md-3">
+                        <div className="card shadow-sm border-0 p-3 text-center">
+                            <div className="text-muted small">Alumnos Activos</div>
+                            <div className="h4 mb-0 fw-bold">23</div>
+                        </div>
+                    </div>
+                    <div className="col-md-3">
+                        <div className="card shadow-sm border-0 p-3 text-center">
+                            <div className="text-muted small">Asistencia Hoy</div>
+                            <div className="h4 mb-0 fw-bold">18</div>
+                        </div>
+                    </div>
+                    <div className="col-md-3">
+                        <div className="card shadow-sm border-0 p-3 text-center">
+                            <div className="text-muted small">Ingresos Mes</div>
+                            <div className="h4 mb-0 fw-bold text-success">$2,700</div>
+                        </div>
+                    </div>
+                    <div className="col-md-3">
+                        <div className="card shadow-sm border-0 p-3 text-center position-relative">
+                            <div className="text-muted small">Pendiente</div>
+                            <div className="h4 mb-0 fw-bold text-danger">$3,500</div>
+                            <i className="fas fa-bell position-absolute top-0 end-0 m-2 text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            {/* Grid Principal: Gráfico y Próximas Clases */}
+            <section className="row">
+                {/* Contenedor del Gráfico */}
+                <div className="col-lg-8 mb-4">
+                    <div className="card shadow-sm border-0 p-4 h-100">
+                        <h5 className="fw-bold mb-3">Ingresos / Gastos</h5>
+                        <div style={{ height: '300px' }}>
+                            <canvas id="myChart"></canvas>
+                        </div>
+                        <p className="text-muted small mt-3">Mes: Agosto 2026</p>
+                    </div>
+                </div>
+
+                {/* Lista de Próximas Clases */}
+                <div className="col-lg-4 mb-4">
+                    <div className="card shadow-sm border-0 p-4 h-100">
+                        <h5 className="fw-bold mb-3">Próximas clases</h5>
+                        <ul className="list-group list-group-flush">
+                            {[
+                                { time: '1:20 p.m.', name: 'Danza Inicial' },
+                                { time: '1:30 p.m.', name: 'Folklor Adultos' },
+                                { time: '2:20 p.m.', name: 'Zapateado Téc.' },
+                                { time: '2:40 p.m.', name: 'Danza Infantil' },
+                                { time: '4:00 p.m.', name: 'Ensayo General' },
+                            ].map((clase, index) => (
+                                <li key={index} className="list-group-item d-flex justify-content-between align-items-center border-0 px-0 py-3">
+                                    <span className="badge bg-light text-dark fw-normal p-2">{clase.time}</span>
+                                    <span className="fw-semibold">{clase.name}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+    );
+}
+
+export default Dashboard;

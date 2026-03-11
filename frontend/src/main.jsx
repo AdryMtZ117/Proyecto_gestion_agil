@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter } from 'react-router-dom' // <-- Este es el motor de rutas
+import { BrowserRouter } from 'react-router-dom'
+//import 'bootstrap/dist/css/bootstrap.min.css'; // Importante para que funcione bootstrap
 import './index.css'
 import App from './App.jsx'
 
