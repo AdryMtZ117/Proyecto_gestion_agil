@@ -1,151 +1,68 @@
-import React, { useState, useEffect, useRef } from 'react';
-import Chart from 'chart.js/auto';
+import React, { useEffect, useRef } from 'react';
+import { Chart } from 'chart.js/auto';
 import '../style/App_Dashboard.css';
 
 function Dashboard() {
-
-    const [dashboard, setDashboard] = useState({
-        alumnosActivos: 0,
-        asistenciasHoy: 0,
-        ingresosMes: 0,
-        saldoPendiente: 0,
-        ingresosGastos: [],
-        proximasClases: []
-    });
-
     const chartRef = useRef(null);
     const chartInstance = useRef(null);
 
-    // FETCH DEL BACKEND
     useEffect(() => {
-        fetch('http://localhost:3000/api/dashboard')
-            .then(res => res.json())
-            .then(data => setDashboard(data))
-            .catch(err => console.error("Error dashboard:", err));
-    }, []);
-
-    // CREAR GRAFICA CON LOS DATOS
-    useEffect(() => {
-
-         if (!chartRef.current) return;
-
-        const ctx = chartRef.current.getContext('2d');
-
+        // Destruye el gráfico anterior si existe (evita errores de React)
         if (chartInstance.current) {
             chartInstance.current.destroy();
         }
-
+        
+        const ctx = chartRef.current.getContext('2d');
         chartInstance.current = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: dashboard.ingresosGastos.map(d => d.dia),
+                labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
                 datasets: [
-                    {
-                        label: "Ingresos",
-                        data: dashboard.ingresosGastos.map(d => d.ingresos),
-                        backgroundColor: "rgba(75,192,192,0.6)"
-                    },
-                    {
-                        label: "Gastos",
-                        data: dashboard.ingresosGastos.map(d => d.gastos),
-                        backgroundColor: "rgba(255,99,132,0.6)"
-                    }
+                    { label: 'Ingresos', data: [1200, 1900, 1500, 2700], backgroundColor: '#ff0066' },
+                    { label: 'Gastos', data: [500, 800, 400, 600], backgroundColor: '#bbb' }
                 ]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: true, position: 'top' }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Ingresos / Gastos'
-                        }
-                    },
-                    
-                }
-            }
+            options: { responsive: true, maintainAspectRatio: false }
         });
-
-        return () => {
-            if (chartInstance.current) chartInstance.current.destroy();
-        };
-
-    }, [dashboard.ingresosGastos]);
-
+        
+        return () => chartInstance.current?.destroy();
+    }, []);
 
     return (
         <div className="main-content">
-
             <header className="top-bar">
                 <div className="stats-card">
-
-                    <div className="stat">
-                        Alumnos Activos: <strong>{dashboard.alumnosActivos}</strong>
-                    </div>
-
-                    <div className="stat">
-                        Asistencia de hoy: <strong>{dashboard.asistenciasHoy}</strong>
-                    </div>
-
-                    <div className="stat">
-                        Ingresos del mes: <strong>${dashboard.ingresosMes}</strong>
-                    </div>
-
-                    <div className="stat">
-                        Saldo pendiente: <strong>${dashboard.saldoPendiente}</strong>
-                    </div>
-
+                    <div className="stat">Alumnos Activos: <strong>23</strong></div>
+                    <div className="stat">Asistencia de hoy: <strong>18</strong></div>
+                    <div className="stat">Ingresos del mes: <strong>$2700</strong></div>
+                    <div className="stat">Saldo pendiente: <strong>$3500</strong></div>
                 </div>
-
+                
+                {/* Usamos la etiqueta <i> clásica porque ya tienes FontAwesome en tu index.html */}
                 <div className="notification">
                     <i className="fas fa-bell"></i>
                 </div>
             </header>
 
-
             <div className="dashboard-grid">
-
                 <div className="chart-container">
                     <h3>Ingresos / Gastos</h3>
-
-                    <div style={{ height: "450px", width: "100%" }}>
+                    <div style={{ height: '250px' }}>
                         <canvas ref={chartRef}></canvas>
                     </div>
-
-                    <p className="chart-label">
-                        Mes: {new Date().toLocaleString('es-ES', { month: 'long' })}
-                    </p>
-
+                    <p className="chart-label">Mes: Agosto</p>
                 </div>
-
-
+                
                 <div className="classes-container">
                     <h3>Próximas clases</h3>
-
                     <ul className="class-list">
-
-                        {dashboard.proximasClases.length === 0 ? (
-                            <p>No hay próximas clases</p>
-                        ) : (
-                            dashboard.proximasClases.map((clase, i) => (
-                                <li key={i}>
-                                    <span>{clase.hora}</span>
-                                    <span>{clase.nombre}</span>
-                                </li>
-                            ))
-                        )}
-
+                        <li><span>1:20 p.m.</span> <span>Danza alt</span></li>
+                        <li><span>1:30 p.m.</span> <span>Danza alt</span></li>
+                        <li><span>2:20 p.m.</span> <span>Danza alt</span></li>
+                        <li><span>2:40 p.m.</span> <span>Danza alt</span></li>
                     </ul>
-
                 </div>
-
             </div>
-
         </div>
     );
 }
