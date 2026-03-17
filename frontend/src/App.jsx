@@ -9,6 +9,8 @@ import Finanzas2 from './pages/Finanzas2';
 
 import './App.css';
 
+//NOTA SE CAMBIO EL PATH DE ALUMNOS PERFIL PARA PODER RECIBIR EL ID DEL ALUMNO
+
 function App() {
     return (
         <Layout>
@@ -16,7 +18,7 @@ function App() {
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/alumnos" element={<Alumnos />} />
                 <Route path="/finanzas" element={<Finanzas />} />
-                <Route path="/alumnos/perfil" element={<Alumnos2 />} />
+                <Route path="/alumnos/perfil/:id" element={<Alumnos2 />} />
                 <Route path="/finanzas2" element={<Finanzas2 />} />
                 <Route path="/asistencias" element={<main className="main-content"><h2>Próximamente</h2></main>} />
             </Routes>

@@ -27,6 +27,25 @@ app.get('/api/status', (req, res) => {
   });
 });
 
+app.use((req, res, next) => {
+  req.pool = pool;
+  next();
+});
+
+//BACKEND JUNTO A SUS PRUEBAS
+
+//DASHBOARD
+const dashboardtestRoutes = require('./dashboard/pruebas');
+app.use('/api/pruebas/dashboard', dashboardtestRoutes);
+const dashboardRoutes = require('./dashboard/dashboard');
+app.use('/api/dashboard', dashboardRoutes);
+
+//ALUMNOS
+const alum1testRoutes = require('./alumnos/pruebas');
+app.use('/api/pruebas/alumnos', alum1testRoutes);
+const alumnos1Routes = require('./alumnos/alumnos');
+app.use('/api/alumnos1', alumnos1Routes);
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);

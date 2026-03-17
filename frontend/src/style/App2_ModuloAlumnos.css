@@ -207,6 +207,7 @@ body {
 
 .status-dot.success { background-color: #00e676; }
 .status-dot.danger { background-color: #ff3d00; }
+.status-dot.deuda { background-color: #f2ff00; }
 
 /* Botón Nuevo Alumno */
 .bottom-action {
