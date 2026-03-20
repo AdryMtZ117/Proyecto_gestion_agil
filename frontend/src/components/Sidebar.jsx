@@ -1,10 +1,47 @@
+// 1. Agregamos useEffect a la importación de React
+import { useEffect } from 'react'; 
 import { useNavigate, useLocation } from 'react-router-dom';
+import '../style/App_Dashboard.css'; // Asegúrate de tener tu CSS importado
 
 function Sidebar() {
     const navigate = useNavigate();
-    const location = useLocation(); // Para saber en qué página estamos
+    const location = useLocation();
 
-    // Función para saber si el botón debe verse "activo"
+    // 2. Lógica para cambiar el color del body
+    useEffect(() => {
+        // Evaluamos la ruta actual y asignamos un color de fondo
+        switch (location.pathname) {
+            case '/':
+                document.body.style.backgroundColor = '#f8bdec'; // Azul muy clarito
+                break;
+            case '/alumnos':
+                document.body.style.backgroundColor = '#e6b9f4'; // Rosa clarito (el de tu diseño)
+                break;
+            case '/asistencias':
+                document.body.style.backgroundColor = '#f0f3ca'; // Naranja clarito
+                break;
+            case '/clases':
+                document.body.style.backgroundColor = '#cceff1'; // Morado clarito
+                break;
+            case '/finanzas':
+                document.body.style.backgroundColor = '#cdf8d3'; // Verde clarito
+                break;
+            case '/reportes':
+                document.body.style.backgroundColor = '#f4dec8'; // Turquesa clarito
+                break;
+            default:
+                document.body.style.backgroundColor = '#f6c2ef'; // Color grisáceo por defecto
+                break;
+        }
+
+        // Limpiamos el estilo al desmontar (buena práctica)
+        return () => {
+            document.body.style.backgroundColor = '';
+        };
+    }, [location.pathname]); // El array indica que esto se ejecuta CADA VEZ que cambia la ruta
+
+
+    // Función intacta para los botones
     const isActive = (path) => location.pathname === path ? 'active' : '';
 
     return (
@@ -13,22 +50,22 @@ function Sidebar() {
                 <i className="fas fa-user"></i>
             </div>
             <ul className="nav-links">
-                <li className={isActive('/')} onClick={() => navigate('/')}>
+                <li className={`principal ${isActive('/')}`} onClick={() => navigate('/')}>
                     <i className="fas fa-home"></i><span>Página Principal</span>
                 </li>
-                <li className={isActive('/alumnos')} onClick={() => navigate('/alumnos')}>
+                <li className={`alumnos ${isActive('/alumnos')}`} onClick={() => navigate('/alumnos')}>
                     <i className="fas fa-graduation-cap"></i><span>Alumnos</span>
                 </li>
-                <li className={isActive('/asistencias')} onClick={() => navigate('/asistencias')}>
+                <li className={`asistencias ${isActive('/asistencias')}`} onClick={() => navigate('/asistencias')}>
                     <i className="fas fa-calendar-check"></i><span>Asistencias</span>
                 </li>
-                <li className={isActive('/clases')} onClick={() => navigate('/clases')}>
+                <li className={`clases ${isActive('/clases')}`} onClick={() => navigate('/clases')}>
                     <i className="fas fa-book"></i><span>Clases</span>
                 </li>
-                <li className={isActive('/finanzas')} onClick={() => navigate('/finanzas')}>
+                <li className={`finanzas ${isActive('/finanzas')}`} onClick={() => navigate('/finanzas')}>
                     <i className="fas fa-piggy-bank"></i><span>Finanzas</span>
                 </li>
-                <li className={isActive('/reportes')} onClick={() => navigate('/reportes')}>
+                <li className={`reportes ${isActive('/reportes')}`} onClick={() => navigate('/reportes')}>
                     <i className="fas fa-chart-bar"></i><span>Reportes</span>
                 </li>
             </ul>

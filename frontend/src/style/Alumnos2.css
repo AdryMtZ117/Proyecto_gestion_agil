@@ -1,3 +1,19 @@
+:root {
+    --bg-color: #ee0f59;
+    --sidebar-bg: #e0e0e0;
+    --accent-color: #ff0066;
+    --card-bg: #f8bbd0;
+    --text-dark: #333;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-dark);
+}
+
+
 /* src/style/Alumnos2.css */
 
 .alumnos-profile-layout {

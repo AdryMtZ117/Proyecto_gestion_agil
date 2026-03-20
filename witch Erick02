@@ -1,0 +1,18 @@
+* [33m0a225e5[m[33m ([m[1;31morigin/Erick02[m[33m)[m Revert "Creacion de seccion para el backend del dashboard, implementacion en el frontend, implementacion del query dentro de init.sql, llamada del backend de dashboard y pruebas en el index y creación de code para pruebas unitarias"
+* [33m544dce7[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Creacion de seccion para el backend del dashboard, implementacion en el frontend, implementacion del query dentro de init.sql, llamada del backend de dashboard y pruebas en el index y creación de code para pruebas unitarias
+* [33m8044d87[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mYukiel2[m[33m, [m[1;31morigin/Yukiel2[m[33m)[m Implemetacion de 3 nuevas paginas en el frontend
+* [33m4bf7f22[m[33m ([m[1;32mmain[m[33m)[m Pagina 3
+* [33mcb2521a[m gitignore para node modules
+* [33m72d54ee[m[33m ([m[1;31morigin/kevin01[m[33m)[m Prueba de visualisar todo lo que llevo en otra maquina distinta
+* [33m5d6032d[m logo de applicacion prueba de prototipo
+* [33m262e20c[m Guardar prueba de la pagina 1 y 2
+* [33m0bcfd73[m Prueba del Segundo Modulo
+* [33m123cd9f[m Intregracion de la primera Pagina
+* [33m6391b64[m[33m ([m[1;31morigin/karla01[m[33m)[m Hola mundo :D
+* [33m3e6449c[m[33m ([m[1;31morigin/erick01[m[33m)[m Prueba erick
+* [33mc0673e3[m cara feliz
+* [33m9a167f2[m prueba commit
+* [33m3d62342[m duplique el check
+* [33m1ccbf5d[m feat: agregue el tutorial de uso
+* [33m6c8c548[m feat: agrega script SQL de inicialización
+* [33m6da171d[m feat: entorno base funcional con React, Node, MySQL y Docker

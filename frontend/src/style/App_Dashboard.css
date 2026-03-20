@@ -53,3 +53,59 @@
     margin-top: 10px;
     font-weight: bold;
 }
+
+
+/* --- TRANSICIÓN SUAVE PARA TODOS LOS BOTONES --- */
+.nav-links li {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Para que los íconos de FontAwesome tomen el color blanco al activarse */
+.nav-links li.active i, 
+.nav-links li:hover i {
+    color: white; 
+}
+
+/* --- COLORES POR SECCIÓN (ACTIVO Y HOVER) --- */
+
+/* Página Principal - Azul */
+.nav-links li.principal.active, 
+.nav-links li.principal:hover {
+    background-color: #ff00e6;
+    color: white;
+}
+
+/* Alumnos - Rosa (El de tu diseño) */
+.nav-links li.alumnos.active, 
+.nav-links li.alumnos:hover {
+    background-color: #610095;
+    color: white;
+}
+
+/* Asistencias - Naranja */
+.nav-links li.asistencias.active, 
+.nav-links li.asistencias:hover {
+    background-color: #fdb314;
+    color: white;
+}
+
+/* Clases - Morado */
+.nav-links li.clases.active, 
+.nav-links li.clases:hover {
+    background-color: #0095ff;
+    color: white;
+}
+
+/* Finanzas - Verde */
+.nav-links li.finanzas.active, 
+.nav-links li.finanzas:hover {
+    background-color: #28a745;
+    color: white;
+}
+
+/* Reportes - Turquesa */
+.nav-links li.reportes.active, 
+.nav-links li.reportes:hover {
+    background-color: #c97603;
+    color: white;
+}
