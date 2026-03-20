@@ -35,7 +35,7 @@ services:
     # Volumen para desarrollo: refleja los cambios sin tener que reconstruir la imagen
     volumes:
       - ./backend:/app
-      - /app/node_modules
+      - backend_node_modules:/app/node_modules
 
   # 3. Servidor Frontend (React)
   frontend:
@@ -51,8 +51,10 @@ services:
       - backend
     volumes:
       - ./frontend:/app
-      - /app/node_modules
+      - frontend_node_modules:/app/node_modules
 
-# Definición del volumen persistente para la BD
+# Definición de volúmenes persistentes
 volumes:
   db_data:
+  backend_node_modules:
+  frontend_node_modules:

@@ -6,6 +6,7 @@ import Finanzas from './pages/Finanzas';
 import Sidebar from './components/Sidebar';
 import Alumnos2 from './pages/Alumnos2';
 import Finanzas2 from './pages/Finanzas2';
+import Asistencias from './pages/Asistencias';
 
 import './App.css';
 
@@ -20,7 +21,7 @@ function App() {
                 <Route path="/finanzas" element={<Finanzas />} />
                 <Route path="/alumnos/perfil/:id" element={<Alumnos2 />} />
                 <Route path="/finanzas2" element={<Finanzas2 />} />
-                <Route path="/asistencias" element={<main className="main-content"><h2>Próximamente</h2></main>} />
+                <Route path="/asistencias" element={<Asistencias />} />
             </Routes>
         </Layout>
     );
