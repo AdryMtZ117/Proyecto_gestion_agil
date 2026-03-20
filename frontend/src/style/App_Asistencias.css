@@ -1,0 +1,133 @@
+.asistencias-layout {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 40px;
+    background-color: #fcfcfc;
+    min-height: 100vh;
+}
+
+.asistencias-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.asistencias-header h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #1a1a1a;
+    margin: 0;
+}
+
+.notification-bell {
+    background-color: #d8d0d5;
+    border-radius: 12px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    color: #000;
+    cursor: pointer;
+}
+
+.asistencias-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 800px;
+}
+
+.asistencias-content p {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+.input-scan {
+    width: 100%;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: none;
+    background-color: #FAF2BA; /* Light Yellow */
+    font-size: 1.2rem;
+    font-weight: bold;
+    outline: none;
+}
+
+.input-scan::placeholder {
+    color: #bebebe;
+    font-weight: normal;
+}
+
+.btn-scan {
+    background-color: #EBD971; /* Darker Yellow */
+    border: none;
+    border-radius: 20px;
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #000;
+    cursor: pointer;
+    width: fit-content;
+    transition: background-color 0.2s ease;
+}
+
+.btn-scan:hover {
+    background-color: #d6b840;
+}
+
+/* CARDS DE RESULTADO */
+.result-card {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 2rem;
+    gap: 20px;
+    color: #000;
+    font-weight: 600;
+}
+
+.result-card.success {
+    background-color: #C0EE14; 
+}
+
+.result-card.warning {
+    background-color: #F8DA0F; 
+}
+
+.result-card.error {
+    background-color: #FF5D00;
+    color: #000; 
+}
+
+.student-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #fff;
+}
+
+.result-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.result-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.result-details {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 1.1rem;
+}

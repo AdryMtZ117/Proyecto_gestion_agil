@@ -46,6 +46,10 @@ app.use('/api/pruebas/alumnos', alum1testRoutes);
 const alumnos1Routes = require('./alumnos/alumnos');
 app.use('/api/alumnos1', alumnos1Routes);
 
+//ASISTENCIAS
+const asistenciasRoutes = require('./asistencias/asistencias');
+app.use('/api/asistencias', asistenciasRoutes);
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
