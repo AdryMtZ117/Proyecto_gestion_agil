@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 import '../style/App_Dashboard.css';
+import '../style/Reportes.css';
 
 function Dashboard() {
 
@@ -78,6 +79,7 @@ function Dashboard() {
 
 
     return (
+        <main className="main-content finanzas-layout">
         <div className="main-content">
 
             <header className="top-bar">
@@ -130,6 +132,7 @@ function Dashboard() {
             </div>
 
         </div>
+        </main>
     );
 }
 
