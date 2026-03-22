@@ -12,25 +12,25 @@ function Sidebar() {
         // Evaluamos la ruta actual y asignamos un color de fondo
         switch (location.pathname) {
             case '/':
-                document.body.style.backgroundColor = '#f8bdec'; // Azul muy clarito
+                document.body.style.backgroundColor = '#f8cdef'; 
                 break;
             case '/alumnos':
-                document.body.style.backgroundColor = '#e6b9f4'; // Rosa clarito (el de tu diseño)
+                document.body.style.backgroundColor = '#e6b9f4';
                 break;
             case '/asistencias':
-                document.body.style.backgroundColor = '#f0f3ca'; // Naranja clarito
+                document.body.style.backgroundColor = '#f0f3ca'; 
                 break;
             case '/clases':
-                document.body.style.backgroundColor = '#cceff1'; // Morado clarito
+                document.body.style.backgroundColor = '#cceff1';
                 break;
             case '/finanzas':
-                document.body.style.backgroundColor = '#cdf8d3'; // Verde clarito
+                document.body.style.backgroundColor = '#cdf8d3';
                 break;
             case '/reportes':
-                document.body.style.backgroundColor = '#f4dec8'; // Turquesa clarito
+                document.body.style.backgroundColor = '#f4dec8'; 
                 break;
             default:
-                document.body.style.backgroundColor = '#f6c2ef'; // Color grisáceo por defecto
+                document.body.style.backgroundColor = '#f6c2ef'; 
                 break;
         }
 
