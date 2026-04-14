@@ -1,0 +1,146 @@
+.main-content.clases-layout {
+    display: flex;
+    flex-direction: column;
+    padding: 24px 32px;
+    gap: 20px;
+    min-height: 100vh;
+    background-color: #f1fffd;
+}
+.top-bar-simple {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.fecha-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.fecha-header h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #1a1a1a;
+    font-family: 'Segoe UI', sans-serif;
+}
+.btn-editar {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    color: #555;
+    transition: color 0.2s;
+}
+.btn-editar:hover {
+    color: #1a1a1a;
+}
+.notification {
+    width: 44px;
+    height: 44px;
+    background-color: #c8e8e3;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #333;
+    cursor: pointer;
+}
+.calendario-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+.mes-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #b2ede4;
+    border-radius: 14px 14px 0 0;
+    padding: 12px 24px;
+    width: fit-content;
+}
+.mes-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+    font-family: 'Segoe UI', sans-serif;
+}
+.btn-dropdown {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    color: #333;
+}
+.nav-flechas {
+    display: flex;
+    gap: 4px;
+}
+.nav-flechas button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    color: #333;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+.nav-flechas button:hover {
+    background-color: #8fe0d6;
+}
+.calendario-grid-wrapper {
+    background-color: #d6f7f2;
+    border-radius: 0 16px 16px 16px;
+    padding: 28px 24px;
+    flex: 1;
+}
+.dias-semana {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: 8px;
+}
+.dia-semana-label {
+    text-align: center;
+    font-weight: 600;
+    font-size: 15px;
+    color: #444;
+    padding: 10px 0;
+    font-family: 'Segoe UI', sans-serif;
+}
+.dias-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.dia-celda {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 78px;
+}
+
+.dia-celda.vacia {
+    background: transparent;
+}
+.dia-numero {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 16px;
+    color: #222;
+    cursor: pointer;
+    font-family: 'Segoe UI', sans-serif;
+    transition: background 0.15s;
+}
+.dia-numero:hover {
+    background-color: #9ee8de;
+}
+.dia-numero.hoy {
+    background-color: #1abc9c;
+    color: #fff;
+    font-weight: 700;
+}
