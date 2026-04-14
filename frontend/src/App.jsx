@@ -7,7 +7,11 @@ import Sidebar from './components/Sidebar';
 import Alumnos2 from './pages/Alumnos2';
 import Finanzas2 from './pages/Finanzas2';
 import Asistencias from './pages/Asistencias';
+<<<<<<< HEAD
 import Reportes from './pages/Reportes';
+=======
+import Clases from './pages/Clases';
+>>>>>>> origin/karla01
 
 import './App.css';
 
@@ -23,7 +27,11 @@ function App() {
                 <Route path="/alumnos/perfil/:id" element={<Alumnos2 />} />
                 <Route path="/finanzas2" element={<Finanzas2 />} />
                 <Route path="/asistencias" element={<Asistencias />} />
+<<<<<<< HEAD
                 <Route path="/reportes" element={<Reportes />} />
+=======
+                <Route path="/clases" element={<Clases />} />
+>>>>>>> origin/karla01
             </Routes>
         </Layout>
     );
