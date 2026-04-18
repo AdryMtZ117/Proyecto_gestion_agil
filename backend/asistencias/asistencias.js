@@ -17,6 +17,8 @@ router.post('/scan', async (req, res) => {
         c.nombre, 
         c.apellidoP, 
         c.estado,
+        c.id_membresia,
+        cl.id_clase,
         cl.nombre AS disciplina
       FROM Cliente c
       LEFT JOIN Membresia me ON c.id_membresia = me.id_membresia
@@ -39,12 +41,13 @@ router.post('/scan', async (req, res) => {
     let resultStatus = 'error';
     let message = '';
 
-    if (cliente.estado === 'Activo') {
+    const estadoMinuscula = cliente.estado ? cliente.estado.toLowerCase() : '';
+    if (estadoMinuscula === 'activo') {
       resultStatus = 'success';
-      message = '¡BIENVENIDO A CORAZÓN DE PIEDRA!';
-    } else if (cliente.estado === 'Con deuda') {
+      message = nombreCompleto;
+    } else if (estadoMinuscula === 'con deuda') {
       resultStatus = 'warning';
-      message = '¡ALERTA EL USUARIO TIENE UN PAGO VENCIDO!';
+      message = nombreCompleto;
     } else {
       resultStatus = 'error';
       message = `¡ERROR NO SE HA ENCONTRADO EL USUARIO [${query.toUpperCase()}]! (Estado: ${cliente.estado})`;
@@ -59,6 +62,9 @@ router.post('/scan', async (req, res) => {
       status: resultStatus,
       message,
       student: {
+        id_cliente: cliente.id_cliente,
+        id_membresia: cliente.id_membresia,
+        id_clase: cliente.id_clase,
         nombre: nombreCompleto,
         estado: cliente.estado,
         clase: cliente.disciplina || 'No asignada'
@@ -69,6 +75,26 @@ router.post('/scan', async (req, res) => {
   } catch (err) {
     console.error('Error al escanear asistencia:', err);
     res.status(500).json({ status: 'error', message: 'Error interno del servidor.' });
+  }
+});
+
+// POST /api/asistencias/register
+router.post('/register', async (req, res) => {
+  const { id_cliente, id_membresia, id_clase } = req.body;
+
+  if (!id_cliente || !id_membresia || !id_clase) {
+    return res.status(400).json({ status: 'error', message: 'Faltan datos para registrar asistencia.' });
+  }
+
+  try {
+    await req.pool.promise().query(
+      'INSERT INTO Asistencia (id_cliente, id_membresia, id_clase) VALUES (?, ?, ?)',
+      [id_cliente, id_membresia, id_clase]
+    );
+    res.json({ status: 'success', message: '¡Asistencia registrada exitosamente!' });
+  } catch (err) {
+    console.error('Error al registrar asistencia:', err);
+    res.status(500).json({ status: 'error', message: 'Error interno al registrar la asistencia.' });
   }
 });
 

@@ -27,7 +27,11 @@ CREATE TABLE IF NOT EXISTS Maestros (
 CREATE TABLE IF NOT EXISTS Clases (
     id_clase INT PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(100) NOT NULL,
-    horario VARCHAR(100),
+    dias_semana VARCHAR(50),
+    hora_inicio TIME,
+    hora_fin TIME,
+    fecha_inicio DATE,
+    fecha_fin DATE,
     capacidad_maxima INT,
     nivel VARCHAR(50),
     id_maestro INT,

@@ -70,6 +70,34 @@ function Asistencias() {
         }
     }
 
+    const handleRegisterAsistencia = async () => {
+        if (!scanResult || !scanResult.student) return;
+
+        const { id_cliente, id_membresia, id_clase, clase } = scanResult.student;
+
+        if (clase === 'No asignada' || !id_clase || !id_membresia) {
+            alert('No se puede registrar asistencia: El alumno no tiene una clase asignada.');
+            return;
+        }
+
+        try {
+            const response = await axios.post('http://localhost:3000/api/asistencias/register', {
+                id_cliente,
+                id_membresia,
+                id_clase
+            });
+
+            if (response.data.status === 'success') {
+                alert('¡Asistencia registrada con éxito!');
+                setSearchValue('');
+                setScanResult(null);
+            }
+        } catch (error) {
+            alert('Error al registrar la asistencia');
+            console.error(error);
+        }
+    };
+
     return (
         <main className="main-content asistencias-layout">
             <header className="asistencias-header">
@@ -117,8 +145,8 @@ function Asistencias() {
                         {scanResult.student && (
                             <div className="result-details">
                                 <span>Estado: {scanResult.student.estado}</span>
-                                <span>Nombre: {scanResult.student.nombre}</span>
                                 <span>Clase: {scanResult.student.clase}</span>
+                                <button className="btn-register-asistencia" onClick={handleRegisterAsistencia}>Registrar asistencia</button>
                             </div>
                         )}
                     </div>

@@ -1,6 +1,6 @@
 // Comandos necesarios para la practica 
 
-
+antes de ejecutar los comandos corran docker desktop
 para ejecutar: docker-compose up 
 para detener: docker-compose down
 para reconstruir: docker-compose up --build

@@ -92,7 +92,7 @@
 }
 
 .result-card.success {
-    background-color: #C0EE14; 
+    background-color: #EBD971; 
 }
 
 .result-card.warning {
@@ -102,6 +102,25 @@
 .result-card.error {
     background-color: #FF5D00;
     color: #000; 
+}
+
+.btn-register-asistencia {
+    background-color: #fcfcfc;
+    border: none;
+    border-radius: 15px;
+    padding: 8px 16px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    margin-top: 10px;
+    width: max-content;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: background-color 0.2s ease;
+}
+
+.btn-register-asistencia:hover {
+    background-color: #e0e0e0;
 }
 
 .student-photo {

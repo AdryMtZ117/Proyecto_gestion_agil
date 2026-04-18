@@ -50,6 +50,10 @@ app.use('/api/alumnos1', alumnos1Routes);
 const asistenciasRoutes = require('./asistencias/asistencias');
 app.use('/api/asistencias', asistenciasRoutes);
 
+//CLASES
+const clasesRoutes = require('./clases/clases');
+app.use('/api/clases', clasesRoutes);
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);

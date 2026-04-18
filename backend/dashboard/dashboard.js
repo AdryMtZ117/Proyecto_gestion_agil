@@ -73,10 +73,10 @@ router.get('/', async (req, res) => {
       poolPromise.query(`
         SELECT 
           nombre,
-          DATE_FORMAT(horario, '%h:%i %p') AS hora
+          DATE_FORMAT(hora_inicio, '%h:%i %p') AS hora
         FROM Clases
         WHERE activo=1
-        ORDER BY horario ASC
+        ORDER BY hora_inicio ASC
         LIMIT 5
       `)
     ]);
