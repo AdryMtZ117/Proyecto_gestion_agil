@@ -13,18 +13,11 @@ function Asistencias() {
         setScanResult(null);
 
         try {
-            // Simulamos o llamamos al backend
-            // Vamos a hacerlo apuntando al backend real,
-            // pero si no existe aún la ruta en el backend, usaremos datos de prueba locales
-            // hasta crear la ruta
             const response = await axios.post('http://localhost:3000/api/asistencias/scan', { query: searchValue });
             setScanResult(response.data);
         } catch (error) {
-            // Si el backend aún no tiene el endpoint, mostramos un error de prueba
-            // Esto es para que funcione en caso de que falte definirlo, pero lo cambiaremos
             const status = error.response?.status;
             if (status === 404 && searchValue) {
-                // Mock para prueba local
                 simularEscaneo(searchValue);
             } else if (error.response && error.response.data) {
                 setScanResult(error.response.data);
@@ -39,9 +32,7 @@ function Asistencias() {
         }
     };
 
-    // Función temporal de simulación mientras se levanta el backend
     const simularEscaneo = (val) => {
-        // Mockeos
         if (val === '1' || val.toLowerCase() === 'activo') {
             setScanResult({
                 status: 'success',
@@ -134,7 +125,7 @@ function Asistencias() {
                         />
                     )}
                     {(scanResult.status === 'error' && scanResult.photoUrl) && (
-                         <img 
+                            <img 
                             src={scanResult.photoUrl} 
                             alt="Student Error" 
                             className="student-photo" 

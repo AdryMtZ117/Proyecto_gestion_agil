@@ -1,9 +1,18 @@
+/* =========================================
+   Módulo de Clases
+   ========================================= */
+
 .clases-page-wrapper {
     display: flex;
+    flex: 1; 
     flex-direction: column;
     padding: 24px 32px;
-    min-height: 100vh;
     background-color: #f1fffd;
+    border-radius: 30px; 
+    margin: 20px; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    width: 100%; /* Esto soluciona el espacio vacío a la derecha */
+    box-sizing: border-box;
 }
 
 .top-bar-full {
@@ -26,8 +35,6 @@
     display: flex;
     flex-direction: column;
 }
-
-
 
 .btn-agregar-clase {
     background-color: #1abc9c;
@@ -129,7 +136,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 60px; /* Reducido un poco para modo Split */
+    height: 60px;
 }
 
 .dia-celda.vacia {
@@ -162,7 +169,7 @@
 }
 
 .dia-numero.seleccionado {
-    border: 3px solid #ff0066; /* Rosa fuerte para el puntero/selección */
+    border: 3px solid #ff0066;
     font-weight: bold;
 }
 

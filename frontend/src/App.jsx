@@ -9,6 +9,7 @@ import Finanzas2 from './pages/Finanzas2';
 import Asistencias from './pages/Asistencias';
 import Reportes from './pages/Reportes';
 import Clases from './pages/Clases';
+import Login from './pages/Login';
 
 import './App.css';
 
