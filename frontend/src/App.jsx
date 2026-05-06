@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import Alumnos from './pages/Alumnos';
@@ -10,25 +10,58 @@ import Asistencias from './pages/Asistencias';
 import Reportes from './pages/Reportes';
 import Clases from './pages/Clases';
 import Login from './pages/Login';
+import ProtectedRoute from './components/ProtectedRoute';
 
 import './App.css';
 
-//NOTA SE CAMBIO EL PATH DE ALUMNOS PERFIL PARA PODER RECIBIR EL ID DEL ALUMNO
-
 function App() {
     return (
-        <Layout>
-            <Routes>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/alumnos" element={<Alumnos />} />
-                <Route path="/finanzas" element={<Finanzas />} />
-                <Route path="/alumnos/perfil/:id" element={<Alumnos2 />} />
-                <Route path="/finanzas2" element={<Finanzas2 />} />
-                <Route path="/asistencias" element={<Asistencias />} />
-                <Route path="/reportes" element={<Reportes />} />
-                <Route path="/clases" element={<Clases />} />
-            </Routes>
-        </Layout>
+        <Routes>
+            <Route path="/login" element={<Login />} />
+            
+            <Route path="/" element={
+                <ProtectedRoute>
+                    <Layout><Dashboard /></Layout>
+                </ProtectedRoute>
+            } />
+            <Route path="/alumnos" element={
+                <ProtectedRoute>
+                    <Layout><Alumnos /></Layout>
+                </ProtectedRoute>
+            } />
+            <Route path="/finanzas" element={
+                <ProtectedRoute>
+                    <Layout><Finanzas /></Layout>
+                </ProtectedRoute>
+            } />
+            <Route path="/alumnos/perfil/:id" element={
+                <ProtectedRoute>
+                    <Layout><Alumnos2 /></Layout>
+                </ProtectedRoute>
+            } />
+            <Route path="/finanzas2" element={
+                <ProtectedRoute>
+                    <Layout><Finanzas2 /></Layout>
+                </ProtectedRoute>
+            } />
+            <Route path="/asistencias" element={
+                <ProtectedRoute>
+                    <Layout><Asistencias /></Layout>
+                </ProtectedRoute>
+            } />
+            <Route path="/reportes" element={
+                <ProtectedRoute adminOnly={true}>
+                    <Layout><Reportes /></Layout>
+                </ProtectedRoute>
+            } />
+            <Route path="/clases" element={
+                <ProtectedRoute>
+                    <Layout><Clases /></Layout>
+                </ProtectedRoute>
+            } />
+            
+            <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
     );
 }
 

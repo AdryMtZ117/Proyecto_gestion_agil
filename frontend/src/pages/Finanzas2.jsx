@@ -2,6 +2,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../style/Finanzas2.css'; // Nuestro nuevo archivo de estilos
 
+import NotificationBell from '../components/NotificationBell';
+
 function Finanzas2() {
     const navigate = useNavigate();
 
@@ -16,9 +18,7 @@ function Finanzas2() {
                     </button>
                     <h2 className="section-title">Registro de Gastos</h2>
                 </div>
-                <div className="notification">
-                    <i className="fas fa-bell"></i>
-                </div>
+                <NotificationBell />
             </header>
 
             {/* Formulario superior */}

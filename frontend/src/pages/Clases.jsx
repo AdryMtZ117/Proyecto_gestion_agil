@@ -2,6 +2,8 @@ import '../style/App_Clases.css';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+import NotificationBell from '../components/NotificationBell';
+
 function Clases() {
     const hoy = new Date();
     const [mesActual, setMesActual] = useState(hoy.getMonth());
@@ -9,8 +11,10 @@ function Clases() {
     const [diaSeleccionado, setDiaSeleccionado] = useState(hoy.getDate());
 
     const [clasesDia, setClasesDia] = useState([]);
+    const [todasClases, setTodasClases] = useState([]);
     const [claseSeleccionada, setClaseSeleccionada] = useState(null);
     const [alumnosClase, setAlumnosClase] = useState([]);
+    const [maestrosList, setMaestrosList] = useState([]);
 
     const [showModal, setShowModal] = useState(false);
     const [formData, setFormData] = useState({
@@ -78,6 +82,16 @@ function Clases() {
         }
     }, [diaSeleccionado, mesActual, anioActual]);
 
+    useEffect(() => {
+        axios.get('http://localhost:3000/api/clases/maestros')
+            .then(res => setMaestrosList(res.data))
+            .catch(err => console.error("Error fetching maestros", err));
+            
+        axios.get('http://localhost:3000/api/clases')
+            .then(res => setTodasClases(res.data))
+            .catch(err => console.error("Error fetching todas las clases", err));
+    }, []);
+
     const handleSelectClase = async (clase) => {
         setClaseSeleccionada(clase);
         try {
@@ -102,6 +116,7 @@ function Clases() {
             alert("¡Clase agregada exitosamente!");
             setShowModal(false);
             fetchClasesDia();
+            axios.get('http://localhost:3000/api/clases').then(res => setTodasClases(res.data));
         } catch (error) {
             alert(error.response?.data?.message || "Error al agregar la clase");
         }
@@ -113,9 +128,7 @@ function Clases() {
                 <button className="btn-agregar-clase" onClick={() => setShowModal(true)}>
                     <i className="fas fa-plus"></i> Agregar Clase
                 </button>
-                <div className="notification">
-                    <i className="fas fa-bell"></i>
-                </div>
+                <NotificationBell />
             </header>
 
             <div className="clases-split-layout">
@@ -154,30 +167,56 @@ function Clases() {
                 </div>
             </div>
 
-            <div className="right-panel">
-                <div className="fecha-header-right">
-                    <h2>{fechaTexto}</h2>
-                </div>
-
+            <div className="right-panel-wrapper">
                 {!claseSeleccionada ? (
-                    <div className="listado-clases">
-                        <h3>Clases Programadas</h3>
-                        {clasesDia.length === 0 ? (
-                            <p className="no-data">No hay clases programadas para este día.</p>
-                        ) : (
-                            <div className="clases-cards">
-                                {clasesDia.map(cl => (
-                                    <div key={cl.id} className="clase-card" onClick={() => handleSelectClase(cl)}>
-                                        <h4>{cl.nombre}</h4>
-                                        <p><i className="far fa-clock"></i> {cl.horaInicio} - {cl.horaFin}</p>
-                                        <p><i className="fas fa-user-tie"></i> {cl.maestro}</p>
-                                    </div>
-                                ))}
+                    <div className="right-panels-split">
+                        <div className="right-panel list-panel">
+                            <div className="fecha-header-right">
+                                <h2>{fechaTexto}</h2>
                             </div>
-                        )}
+                            <div className="listado-clases">
+                                <h3>Clases del Día</h3>
+                                {clasesDia.length === 0 ? (
+                                    <p className="no-data">No hay clases programadas para este día.</p>
+                                ) : (
+                                    <div className="clases-cards">
+                                        {clasesDia.map(cl => (
+                                            <div key={`dia-${cl.id}`} className="clase-card" onClick={() => handleSelectClase(cl)}>
+                                                <h4>{cl.nombre}</h4>
+                                                <p><i className="far fa-clock"></i> {cl.horaInicio} - {cl.horaFin}</p>
+                                                <p><i className="fas fa-user-tie"></i> {cl.maestro}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="right-panel list-panel">
+                            <div className="fecha-header-right">
+                                <h2>Global</h2>
+                            </div>
+                            <div className="listado-clases">
+                                <h3>Todas las Clases</h3>
+                                {todasClases.length === 0 ? (
+                                    <p className="no-data">No hay clases registradas en el sistema.</p>
+                                ) : (
+                                    <div className="clases-cards">
+                                        {todasClases.map(cl => (
+                                            <div key={`todas-${cl.id}`} className="clase-card" onClick={() => handleSelectClase(cl)}>
+                                                <h4>{cl.nombre}</h4>
+                                                <p><i className="far fa-calendar-alt"></i> {cl.dias}</p>
+                                                <p><i className="far fa-clock"></i> {cl.horaInicio} - {cl.horaFin}</p>
+                                                <p><i className="fas fa-user-tie"></i> {cl.maestro}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 ) : (
-                    <div className="detalle-clase">
+                    <div className="right-panel detalle-clase">
                         <button className="btn-volver" onClick={() => setClaseSeleccionada(null)}>
                             <i className="fas fa-arrow-left"></i> Volver a clases
                         </button>
@@ -242,8 +281,13 @@ function Clases() {
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label>ID Maestro (Foránea)</label>
-                                <input type="number" name="id_maestro" value={formData.id_maestro} onChange={handleChangeForm} />
+                                <label>Maestro</label>
+                                <select name="id_maestro" value={formData.id_maestro} onChange={handleChangeForm} required>
+                                    <option value="">Seleccione un maestro...</option>
+                                    {maestrosList.map(m => (
+                                        <option key={m.id} value={m.id}>{m.nombre}</option>
+                                    ))}
+                                </select>
                             </div>
                             <div className="modal-actions">
                                 <button type="button" className="btn-cancel" onClick={() => setShowModal(false)}>Cancelar</button>

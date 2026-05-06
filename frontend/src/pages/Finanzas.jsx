@@ -1,15 +1,29 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // Importación necesaria para el botón
+import { jwtDecode } from 'jwt-decode';
 import '../style/App3_FINANZAS_A.css';
+
+import NotificationBell from '../components/NotificationBell';
 
 function Finanzas() {
     const navigate = useNavigate(); // Activamos la navegación
 
     const [status, setStatus] = useState({ message: 'Conectando...', db_test: '...' });
     const [metodoPago, setMetodoPago] = useState('Efectivo');
+    const [rol, setRol] = useState('');
 
     useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            try {
+                const decoded = jwtDecode(token);
+                setRol(decoded.rol);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
         axios.get('http://localhost:3000/api/status')
             .then(response => setStatus(response.data))
             .catch(err => console.error(err));
@@ -18,9 +32,7 @@ function Finanzas() {
     return (
         <main className="main-content finanzas-layout">
             <header className="top-bar-simple" style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <div className="notification">
-                    <i className="fas fa-bell"></i>
-                </div>
+                <NotificationBell />
             </header>
 
             <h2 className="section-title">Registro de Pagos</h2>
@@ -129,11 +141,13 @@ function Finanzas() {
             </div>
 
             {/* BOTÓN PARA VIAJAR A FINANZAS 2 */}
-            <div style={{ textAlign: 'center', padding: '30px' }}>
-                <button onClick={() => navigate('/finanzas2')} className="btn-action">
-                    <i className="fas fa-file-invoice-dollar"></i> Ir a Registro de Gastos
-                </button>
-            </div>
+            {rol !== 'empleado' && (
+                <div style={{ textAlign: 'center', padding: '30px' }}>
+                    <button onClick={() => navigate('/finanzas2')} className="btn-action">
+                        <i className="fas fa-file-invoice-dollar"></i> Ir a Registro de Gastos
+                    </button>
+                </div>
+            )}
             
         </main>
     );

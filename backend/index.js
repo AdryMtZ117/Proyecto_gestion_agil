@@ -54,6 +54,18 @@ app.use('/api/asistencias', asistenciasRoutes);
 const clasesRoutes = require('./clases/clases');
 app.use('/api/clases', clasesRoutes);
 
+//REPORTES
+const reportesRoutes = require('./reportes/reportes');
+app.use('/api/reportes', reportesRoutes);
+
+//AUTH (Login)
+const authRoutes = require('./auth/auth');
+app.use('/api/auth', authRoutes);
+
+//NOTIFICACIONES
+const notificacionesRoutes = require('./notificaciones/notificaciones');
+app.use('/api/notificaciones', notificacionesRoutes);
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);

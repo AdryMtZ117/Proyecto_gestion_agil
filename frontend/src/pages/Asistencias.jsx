@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import '../style/App_Asistencias.css';
+import NotificationBell from '../components/NotificationBell';
 
 function Asistencias() {
     const [searchValue, setSearchValue] = useState('');
@@ -93,9 +94,7 @@ function Asistencias() {
         <main className="main-content asistencias-layout">
             <header className="asistencias-header">
                 <h1>Control de Asistencia</h1>
-                <div className="notification-bell">
-                    <i className="fas fa-bell"></i>
-                </div>
+                <NotificationBell />
             </header>
 
             <div className="asistencias-content">

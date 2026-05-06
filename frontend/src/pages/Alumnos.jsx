@@ -3,20 +3,22 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; 
 import '../style/App2_ModuloAlumnos.css'; 
 
+import NotificationBell from '../components/NotificationBell';
+
 function Alumnos() {
     const navigate = useNavigate();
 
     const [alumnos, setAlumnos] = useState([]);
     const [filtros, setFiltros] = useState({ nombres: [], disciplinas: [], estatus: [] });
     const [busqueda, setBusqueda] = useState('');
-    const [filtroNombre, setFiltroNombre] = useState('');
     const [filtroDisciplina, setFiltroDisciplina] = useState('');
     const [filtroEstatus, setFiltroEstatus] = useState('');
+    const [clasesList, setClasesList] = useState([]);
 
     const [showModal, setShowModal] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [formData, setFormData] = useState({
-        nombre: '', apellidoP: '', apellidoM: '', telefono: '', correo_electronico: '', estado: 'activo'
+        nombre: '', apellidoP: '', apellidoM: '', telefono: '', correo_electronico: '', estado: 'activo', id_clase: ''
     });
 
     const fetchAlumnos = () => {
@@ -30,10 +32,13 @@ function Alumnos() {
 
     useEffect(() => {
         fetchAlumnos();
+        axios.get('http://localhost:3000/api/alumnos1/clases')
+            .then(res => setClasesList(res.data))
+            .catch(err => console.error("Error fetching clases for alumnos", err));
     }, []);
 
     const handleOpenNew = () => {
-        setFormData({ nombre: '', apellidoP: '', apellidoM: '', telefono: '', correo_electronico: '', estado: 'activo' });
+        setFormData({ nombre: '', apellidoP: '', apellidoM: '', telefono: '', correo_electronico: '', estado: 'activo', id_clase: '' });
         setEditingId(null);
         setShowModal(true);
     };
@@ -45,7 +50,8 @@ function Alumnos() {
             apellidoM: al.apellidoM || '',
             telefono: al.telefono || '',
             correo_electronico: al.correo_electronico || '',
-            estado: al.estado || 'activo'
+            estado: al.estado || 'activo',
+            id_clase: al.id_clase || ''
         });
         setEditingId(al.id);
         setShowModal(true);
@@ -89,18 +95,15 @@ function Alumnos() {
 
     const alumnosFiltrados = alumnos.filter(a => 
         a.nombre.toLowerCase().includes(busqueda.toLowerCase()) &&
-        (filtroNombre ? a.nombre === filtroNombre : true) &&
         (filtroDisciplina ? a.disciplina === filtroDisciplina : true) &&
-        (filtroEstatus ? a.estado === filtroEstatus : true)
+        (filtroEstatus && a.estado ? a.estado.toLowerCase() === filtroEstatus.toLowerCase() : true)
     );
 
     return (
         <main className="main-content alumnos-layout">
             <header className="top-bar-simple">
                 <div className="spacer"></div>
-                <div className="notification">
-                    <i className="fas fa-bell"></i>
-                </div>
+                <NotificationBell />
             </header>
 
             <div className="filters-section">
@@ -115,13 +118,6 @@ function Alumnos() {
                 </div>
 
                 <div className="dropdowns-container">
-                    <div className="custom-select">
-                        <select onChange={e => setFiltroNombre(e.target.value)}>
-                            <option value="">Nombre</option>
-                            {filtros.nombres.map((n, i) => <option key={i} value={n}>{n}</option>)}
-                        </select>
-                        <i className="fas fa-chevron-down"></i>
-                    </div>
                     <div className="custom-select">
                         <select onChange={e => setFiltroDisciplina(e.target.value)}>
                             <option value="">Disciplinas</option>
@@ -232,6 +228,15 @@ function Alumnos() {
                                     <option value="activo">Activo</option>
                                     <option value="inactivo">Inactivo</option>
                                     <option value="con deuda">Con Deuda</option>
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label>Asignar a Clase</label>
+                                <select name="id_clase" value={formData.id_clase} onChange={handleChange}>
+                                    <option value="">Ninguna</option>
+                                    {clasesList.map(c => (
+                                        <option key={c.id_clase} value={c.id_clase}>{c.nombre} ({c.dias_semana})</option>
+                                    ))}
                                 </select>
                             </div>
                             <div className="modal-actions">

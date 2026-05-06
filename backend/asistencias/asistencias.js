@@ -19,7 +19,8 @@ router.post('/scan', async (req, res) => {
         c.estado,
         c.id_membresia,
         cl.id_clase,
-        cl.nombre AS disciplina
+        cl.nombre AS disciplina,
+        cl.dias_semana
       FROM Cliente c
       LEFT JOIN Membresia me ON c.id_membresia = me.id_membresia
       LEFT JOIN Clases cl ON me.id_clase = cl.id_clase
@@ -36,6 +37,30 @@ router.post('/scan', async (req, res) => {
 
     const cliente = rows[0];
     const nombreCompleto = `${cliente.nombre} ${cliente.apellidoP}`.trim();
+
+    if (!cliente.id_clase || !cliente.dias_semana) {
+      return res.json({
+        status: 'error',
+        message: `¡ACCESO DENEGADO! EL ALUMNO NO TIENE NINGUNA CLASE ASIGNADA.`,
+        photoUrl: `https://i.pravatar.cc/150?img=${cliente.id_cliente}`
+      });
+    }
+
+    const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const hoyTxt = diasSemana[new Date().getDay()];
+
+    const normalizeStr = str => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    
+    const diasClaseArr = cliente.dias_semana.split(',').map(d => normalizeStr(d.trim()));
+    const hoyNormalizado = normalizeStr(hoyTxt);
+
+    if (!diasClaseArr.includes(hoyNormalizado)) {
+      return res.json({
+        status: 'error',
+        message: `¡ACCESO DENEGADO! LA CLASE DEL ALUMNO NO ES HOY (${hoyTxt.toUpperCase()}).`,
+        photoUrl: `https://i.pravatar.cc/150?img=${cliente.id_cliente}`
+      });
+    }
 
     // Determinar el mensaje y status dependiendo del estado
     let resultStatus = 'error';

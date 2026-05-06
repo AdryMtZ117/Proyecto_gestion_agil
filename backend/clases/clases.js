@@ -1,6 +1,21 @@
 const express = require('express');
 const router = express.Router();
 
+// GET /api/clases/maestros
+router.get('/maestros', async (req, res) => {
+  try {
+    const [rows] = await req.pool.promise().query(`SELECT id_maestro, Nombre, apellidoP, apellidoM FROM Maestros`);
+    const maestros = rows.map(r => ({
+      id: r.id_maestro,
+      nombre: `${r.Nombre} ${r.apellidoP} ${r.apellidoM || ''}`.trim()
+    }));
+    res.json(maestros);
+  } catch(err) {
+    console.error(err);
+    res.status(500).json({ status: 'error', message: 'Error retrieving maestros' });
+  }
+});
+
 // GET /api/clases
 // Opcional: ?diaSemana=... para filtrar
 router.get('/', async (req, res) => {

@@ -1,6 +1,16 @@
 const express = require('express');
 const router = express.Router();
 
+// GET /api/alumnos1/clases (Debe ir antes de /:id)
+router.get('/clases', async (req, res) => {
+  try {
+    const [rows] = await req.pool.promise().query('SELECT id_clase, nombre, dias_semana, hora_inicio, hora_fin FROM Clases WHERE activo = 1');
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ message: 'Error al obtener clases', error: err.message });
+  }
+});
+
 //BACK PARA LA TABLA DE ALUMNOS 
 router.get('/', async (req, res) => {
   try {
@@ -11,6 +21,7 @@ router.get('/', async (req, res) => {
         c.telefono,
         c.correo_electronico,
         c.estado,
+        cl.id_clase,
         cl.nombre AS disciplina,
         cl.dias_semana,
         cl.hora_inicio,
@@ -20,7 +31,7 @@ router.get('/', async (req, res) => {
       LEFT JOIN Membresia me ON c.id_membresia = me.id_membresia
       LEFT JOIN Clases cl ON me.id_clase = cl.id_clase
       LEFT JOIN Historial_pago h ON h.id_cliente = c.id_cliente
-      GROUP BY c.id_cliente, c.nombre, c.apellidoP, c.apellidoM, c.telefono, c.correo_electronico, c.estado, cl.nombre, cl.dias_semana, cl.hora_inicio, cl.hora_fin
+      GROUP BY c.id_cliente, c.nombre, c.apellidoP, c.apellidoM, c.telefono, c.correo_electronico, c.estado, cl.id_clase, cl.nombre, cl.dias_semana, cl.hora_inicio, cl.hora_fin
       ORDER BY c.nombre
     `);
     const alumnos = rows.map(row => ({
@@ -31,6 +42,7 @@ router.get('/', async (req, res) => {
       apellidoM: row.apellidoM,
       correo_electronico: row.correo_electronico,
       telefono: row.telefono,
+      id_clase: row.id_clase || '',
       disciplina: row.disciplina || 'No asignada',
       horarios: (row.dias_semana && row.hora_inicio) ? [`${row.dias_semana} (${row.hora_inicio} - ${row.hora_fin})`] : [],
       estado: row.estado,
@@ -120,28 +132,71 @@ router.get('/:id', async (req, res) => {
 
 // CREAR NUEVO ALUMNO
 router.post('/', async (req, res) => {
-  const { nombre, apellidoP, apellidoM, telefono, correo_electronico, estado } = req.body;
+  const { nombre, apellidoP, apellidoM, telefono, correo_electronico, estado, id_clase } = req.body;
+  const connection = await req.pool.promise().getConnection();
   try {
-    const [result] = await req.pool.promise().query(
-      'INSERT INTO Cliente (nombre, apellidoP, apellidoM, telefono, correo_electronico, estado) VALUES (?, ?, ?, ?, ?, ?)',
-      [nombre, apellidoP, apellidoM || null, telefono, correo_electronico, estado || 'activo']
+    await connection.beginTransaction();
+
+    let id_membresia = null;
+    
+    if (id_clase) {
+      const [membresias] = await connection.query('SELECT id_membresia FROM Membresia WHERE id_clase = ? LIMIT 1', [id_clase]);
+      if (membresias.length > 0) {
+        id_membresia = membresias[0].id_membresia;
+      } else {
+        const [resMem] = await connection.query(
+          'INSERT INTO Membresia (nombre, precio, tipo, duracion, id_clase) VALUES (?, ?, ?, ?, ?)',
+          ['Membresia Básica', 0, 'Mensual', 1, id_clase]
+        );
+        id_membresia = resMem.insertId;
+      }
+    }
+
+    const [result] = await connection.query(
+      'INSERT INTO Cliente (nombre, apellidoP, apellidoM, telefono, correo_electronico, estado, id_membresia) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [nombre, apellidoP, apellidoM || null, telefono, correo_electronico, estado || 'activo', id_membresia]
     );
+
+    await connection.commit();
     res.status(201).json({ message: 'Alumno creado correctamente', id: result.insertId });
   } catch (err) {
+    await connection.rollback();
     console.error(err);
     res.status(500).json({ message: 'Error al crear alumno', error: err.message });
+  } finally {
+    connection.release();
   }
 });
 
 // ACTUALIZAR ALUMNO EXISTENTE
 router.put('/:id', async (req, res) => {
   const id = req.params.id;
-  const { nombre, apellidoP, apellidoM, telefono, correo_electronico, estado } = req.body;
+  const { nombre, apellidoP, apellidoM, telefono, correo_electronico, estado, id_clase } = req.body;
+  const connection = await req.pool.promise().getConnection();
   try {
-    const [result] = await req.pool.promise().query(
-      'UPDATE Cliente SET nombre = ?, apellidoP = ?, apellidoM = ?, telefono = ?, correo_electronico = ?, estado = ? WHERE id_cliente = ?',
-      [nombre, apellidoP, apellidoM || null, telefono, correo_electronico, estado || 'activo', id]
+    await connection.beginTransaction();
+
+    let id_membresia = null;
+    
+    if (id_clase) {
+      const [membresias] = await connection.query('SELECT id_membresia FROM Membresia WHERE id_clase = ? LIMIT 1', [id_clase]);
+      if (membresias.length > 0) {
+        id_membresia = membresias[0].id_membresia;
+      } else {
+        const [resMem] = await connection.query(
+          'INSERT INTO Membresia (nombre, precio, tipo, duracion, id_clase) VALUES (?, ?, ?, ?, ?)',
+          ['Membresia Básica', 0, 'Mensual', 1, id_clase]
+        );
+        id_membresia = resMem.insertId;
+      }
+    }
+
+    const [result] = await connection.query(
+      'UPDATE Cliente SET nombre = ?, apellidoP = ?, apellidoM = ?, telefono = ?, correo_electronico = ?, estado = ?, id_membresia = ? WHERE id_cliente = ?',
+      [nombre, apellidoP, apellidoM || null, telefono, correo_electronico, estado || 'activo', id_membresia, id]
     );
+
+    await connection.commit();
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Alumno no encontrado' });
@@ -149,8 +204,11 @@ router.put('/:id', async (req, res) => {
     
     res.json({ message: 'Alumno actualizado correctamente' });
   } catch (err) {
+    await connection.rollback();
     console.error(err);
     res.status(500).json({ message: 'Error al actualizar alumno', error: err.message });
+  } finally {
+    connection.release();
   }
 });
 
@@ -172,7 +230,6 @@ router.delete('/:id', async (req, res) => {
     const [result] = await connection.query('DELETE FROM Cliente WHERE id_cliente = ?', [id]);
 
     await connection.commit();
-    connection.release();
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Alumno no encontrado' });
@@ -181,9 +238,10 @@ router.delete('/:id', async (req, res) => {
     res.json({ message: 'Alumno eliminado exitosamente junto con sus registros dependientes' });
   } catch (err) {
     await connection.rollback();
-    connection.release();
     console.error(err);
     res.status(500).json({ message: 'Error al eliminar alumno', error: err.message });
+  } finally {
+    connection.release();
   }
 });
 

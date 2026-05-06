@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import '../style/Login.css'; // Crearemos este archivo en el siguiente paso
+import '../style/Login.css'; 
 
 function Login() {
     const navigate = useNavigate();
@@ -17,16 +17,14 @@ function Login() {
         setError('');
 
         try {
-            // Asumiendo que tu backend en Node.js recibe esto en la ruta de login
-            const response = await axios.post('http://localhost:3000/api/login', credenciales);
+            const response = await axios.post('http://localhost:3000/api/auth/login', credenciales);
             
             if (response.data.success) {
-                // Aquí puedes guardar un token o los datos del usuario si tu backend los envía
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('usuario', JSON.stringify(response.data.usuario));
                 
-                // Redirigir al dashboard o a la página principal tras un login exitoso
-                navigate('/dashboard');
+                // Redirigir al dashboard
+                navigate('/');
             }
         } catch (err) {
             setError(err.response?.data?.message || 'Usuario o contraseña incorrectos');
@@ -34,18 +32,18 @@ function Login() {
     };
 
     return (
-        <div className="login-container">
+        <div className="login-container" style={{ width: '100vw', height: '100vh', margin: 0, padding: 0 }}>
             <div className="login-box">
                 <h2>Iniciar Sesión</h2>
-                {error && <div className="error-message">{error}</div>}
+                {error && <div className="error-message" style={{ color: '#ff4c4c', background: '#ffe6e6', padding: '10px', borderRadius: '5px', marginBottom: '15px', fontWeight: 'bold' }}>{error}</div>}
                 
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label>Correo Electrónico</label>
+                        <label>Usuario o Correo</label>
                         <input 
-                            type="email" 
+                            type="text" 
                             name="correo" 
-                            placeholder="ejemplo@correo.com"
+                            placeholder="admin o ejemplo@correo.com"
                             value={credenciales.correo} 
                             onChange={handleChange} 
                             required 

@@ -5,7 +5,12 @@ para ejecutar: docker-compose up
 para detener: docker-compose down
 para reconstruir: docker-compose up --build
 
+user: admin
+contraseña: admin123
 
+para empleado:
+user: empleado1
+contraseña: empleado123
 
 node_modules
 dist
