@@ -9,28 +9,13 @@ import NotificationBell from '../components/NotificationBell';
 function Finanzas2() {
   const navigate = useNavigate();
 
-<<<<<<< HEAD
-    return (
-        <main className="main-content finanzas2-layout">
-            
-            {/* Cabecera con título, botón regresar y campana */}
-            <header className="top-bar-finanzas2">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                    <button className="btn-back-simple" onClick={() => navigate('/finanzas')}>
-                        <i className="fas fa-arrow-left"></i>
-                    </button>
-                    <h2 className="section-title">Registro de Gastos</h2>
-                </div>
-                <NotificationBell />
-            </header>
-=======
   const [concepto, setConcepto] = useState("Luz eléctrica");
   const [monto, setMonto] = useState("");
   const [ticket, setTicket] = useState(null);
   const [gastos, setGastos] = useState([]);
   const [fecha, setFecha] = useState(new Date().toISOString().split('T')[0]);
   const [busqueda, setBusqueda] = useState("");
->>>>>>> origin/Erick05
+
 
   const [mesActual, setMesActual] = useState(new Date().getMonth());
   const [anioActual, setAnioActual] = useState(new Date().getFullYear());
@@ -48,7 +33,7 @@ function Finanzas2() {
   useEffect(() => { cargar(); }, []);
 
   const cargar = async () => {
-    const res = await fetch(`${API}/api/finanzas/listar-gastos`);
+    const res = await fetch(`${API}/api/finanzasB/listar-gastos`);
     const data = await res.json();
     setGastos(data);
   };
@@ -62,7 +47,7 @@ function Finanzas2() {
     form.append("id_empleado", 1);
     if (ticket) form.append("ticket", ticket);
 
-    await fetch(`${API}/api/finanzas/registrar-gasto`, {
+    await fetch(`${API}/api/finanzasB/registrar-gasto`, {
       method: "POST",
       body: form
     });
@@ -74,10 +59,11 @@ function Finanzas2() {
 
   const filtrar = async () => {
     if (!fecha) return cargar();
-    const res = await fetch(`${API}/api/finanzas/filtrar-gastos?fecha=${fecha}`);
+    const res = await fetch(`${API}/api/finanzasB/filtrar-gastos?fecha=${fecha}`);
     const data = await res.json();
     setGastos(data);
   };
+
 
   const cambiarMes = (offset) => {
     let m = mesActual + offset;
@@ -111,15 +97,17 @@ function Finanzas2() {
   };
 
   return (
-    <main className="finanzas2-layout">
+    <main className="main-content finanzas2-layout">
+      
+      {/* Cabecera con título, botón regresar y campana */}
       <header className="top-bar-finanzas2">
-        <button className="btn-back-simple" onClick={() => navigate('/finanzas')}>
-          ←
-        </button>
-        <h2 className="section-title">Registro de Gastos</h2>
-        <div className="notification">
-          <span className="bell-icon">🔔</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+          <button className="btn-back-simple" onClick={() => navigate('/finanzas')}>
+            <i className="fas fa-arrow-left"></i>
+          </button>
+          <h2 className="section-title">Registro de Gastos</h2>
         </div>
+        <NotificationBell />
       </header>
 
       <section className="gastos-form-section">

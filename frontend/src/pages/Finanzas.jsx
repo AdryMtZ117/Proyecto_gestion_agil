@@ -1,111 +1,15 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-<<<<<<< HEAD
-import { useNavigate } from 'react-router-dom'; // Importación necesaria para el botón
-import { jwtDecode } from 'jwt-decode';
-=======
 import { useNavigate } from 'react-router-dom';
->>>>>>> origin/Erick05
+import { jwtDecode } from 'jwt-decode';
 import '../style/App3_FINANZAS_A.css';
-
 import NotificationBell from '../components/NotificationBell';
 
 function Finanzas() {
   const navigate = useNavigate();
 
-<<<<<<< HEAD
-    const [status, setStatus] = useState({ message: 'Conectando...', db_test: '...' });
-    const [metodoPago, setMetodoPago] = useState('Efectivo');
-    const [rol, setRol] = useState('');
-
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            try {
-                const decoded = jwtDecode(token);
-                setRol(decoded.rol);
-            } catch (e) {
-                console.error(e);
-            }
-        }
-
-        axios.get('http://localhost:3000/api/status')
-            .then(response => setStatus(response.data))
-            .catch(err => console.error(err));
-    }, []);
-
-    return (
-        <main className="main-content finanzas-layout">
-            <header className="top-bar-simple" style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <NotificationBell />
-            </header>
-
-            <h2 className="section-title">Registro de Pagos</h2>
-
-            {/* --- SECCIÓN DE FORMULARIO ESTILO BURBUJA --- */}
-            <div className="payment-form-section">
-                
-                {/* Buscador */}
-                <div className="form-group full-width">
-                    <label>Buscar alumno:</label>
-                    <div className="search-bar-rounded">
-                        <i className="fas fa-search"></i>
-                        <input type="text" placeholder="Buscar" />
-                    </div>
-                </div>
-
-                <div className="form-row">
-                    {/* Concepto y Monto */}
-                    <div className="form-group small">
-                        <label>Seleccionar concepto:</label>
-                        <div className="custom-select-green">
-                            <select defaultValue="Mensualidad">
-                                <option value="Mensualidad">Mensualidad</option>
-                                <option value="Inscripción">Inscripción</option>
-                                <option value="Clase suelta">Clase suelta</option>
-                                <option value="Uniforme">Uniforme</option>
-                            </select>
-                            <i className="fas fa-chevron-down"></i>
-                        </div>
-                    </div>
-
-                    <div className="form-group small">
-                        <label>Monto:</label>
-                        <input type="text" className="input-monto" placeholder="$0.00" />
-                    </div>
-
-                    {/* Método de pago (Botones burbuja) */}
-                    <div className="form-group large">
-                        <label>Método de pago:</label>
-                        <div className="payment-methods-group">
-                            <button 
-                                className={`btn-method ${metodoPago === 'Efectivo' ? 'active' : ''}`}
-                                onClick={() => setMetodoPago('Efectivo')}
-                            >
-                                Efectivo
-                            </button>
-                            <button 
-                                className={`btn-method ${metodoPago === 'Transferencia' ? 'active' : ''}`}
-                                onClick={() => setMetodoPago('Transferencia')}
-                            >
-                                Transferencia
-                            </button>
-                            <button 
-                                className={`btn-method ${metodoPago === 'Tarjeta' ? 'active' : ''}`}
-                                onClick={() => setMetodoPago('Tarjeta')}
-                            >
-                                Tarjeta
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Botones de acción principales */}
-                <div className="action-buttons-row">
-                    <button className="btn-action primary">Registrar pago</button>
-                    <button className="btn-action secondary">Imprimir recibo</button>
-=======
-  // URL ABSOLUTA PARA LAS FOTOS - Asegúrate que coincida con tu estructura
+  const [status, setStatus] = useState({ message: 'Conectando...', db_test: '...' });
+  const [rol, setRol] = useState('');
   const BASE_URL_FOTOS = "http://localhost:3000/uploads/alumnos/";
   const API_URL = "http://localhost:3000/api/finanzasA";
 
@@ -119,10 +23,24 @@ function Finanzas() {
   const [showModal, setShowModal] = useState(false);
   const [pagos, setPagos] = useState([]);
 
-  // Función para obtener la URL correcta de la imagen
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setRol(decoded.rol);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    axios.get('http://localhost:3000/api/status')
+      .then(response => setStatus(response.data))
+      .catch(err => console.error(err));
+    cargarPagos();
+  }, []);
+
   const obtenerUrlImagen = (fotoPath) => {
     if (!fotoPath) return "https://via.placeholder.com/35?text=No+Image";
-    // Si ya viene con la extensión, la usamos directamente
     return `${BASE_URL_FOTOS}${fotoPath}`;
   };
 
@@ -131,10 +49,6 @@ function Finanzas() {
       .then(res => setPagos(res.data))
       .catch(err => console.error("Error al cargar pagos:", err));
   };
-
-  useEffect(() => {
-    cargarPagos();
-  }, []);
 
   useEffect(() => {
     if (busqueda.length < 2) {
@@ -176,6 +90,10 @@ function Finanzas() {
 
   return (
     <main className="main-content finanzas-layout">
+      <header className="top-bar-simple" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <NotificationBell />
+      </header>
+
       <h2 className="section-title">Registro de Pagos</h2>
 
       <div className="payment-form-section">
@@ -215,7 +133,6 @@ function Finanzas() {
                     onError={(e) => { e.target.src = "https://via.placeholder.com/35?text=Error"; }}
                   />
                   {a.nombre} {a.apellidoP}
->>>>>>> origin/Erick05
                 </div>
               ))}
             </div>
@@ -241,19 +158,6 @@ function Finanzas() {
           </div>
         )}
 
-<<<<<<< HEAD
-            {/* BOTÓN PARA VIAJAR A FINANZAS 2 */}
-            {rol !== 'empleado' && (
-                <div style={{ textAlign: 'center', padding: '30px' }}>
-                    <button onClick={() => navigate('/finanzas2')} className="btn-action">
-                        <i className="fas fa-file-invoice-dollar"></i> Ir a Registro de Gastos
-                    </button>
-                </div>
-            )}
-            
-        </main>
-    );
-=======
         <div className="form-row">
           <div className="form-group">
             <label>Concepto:</label>
@@ -355,9 +259,17 @@ function Finanzas() {
           </div>
         </div>
       )}
+
+      {/* BOTÓN PARA VIAJAR A FINANZAS 2 */}
+      {rol !== 'empleado' && (
+        <div style={{ textAlign: 'center', padding: '30px' }}>
+          <button onClick={() => navigate('/finanzas2')} className="btn-action">
+            <i className="fas fa-file-invoice-dollar"></i> Ir a Registro de Gastos
+          </button>
+        </div>
+      )}
     </main>
   );
->>>>>>> origin/Erick05
 }
 
 export default Finanzas;

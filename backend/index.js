@@ -71,7 +71,6 @@ app.use('/api/asistencias', asistenciasRoutes);
 const clasesRoutes = require('./clases/clases');
 app.use('/api/clases', clasesRoutes);
 
-<<<<<<< HEAD
 //REPORTES
 const reportesRoutes = require('./reportes/reportes');
 app.use('/api/reportes', reportesRoutes);
@@ -83,7 +82,7 @@ app.use('/api/auth', authRoutes);
 //NOTIFICACIONES
 const notificacionesRoutes = require('./notificaciones/notificaciones');
 app.use('/api/notificaciones', notificacionesRoutes);
-=======
+
 //FINANZAS A
 const finanzasaRoutes = require('./finanzas/finanzasA/finanzasA');
 app.use('/api/finanzasA', finanzasaRoutes);
@@ -94,7 +93,7 @@ app.use('/api/pruebas/finanzasa', finanzasapruebasRoutes);
 //FINANZAS B
 const finanzasbRoutes = require('./finanzas/finanzasB/finanzasB');
 app.use('/api/finanzasB', finanzasbRoutes);
->>>>>>> origin/Erick05
+
 
 const PORT = process.env.PORT || 3000;
 

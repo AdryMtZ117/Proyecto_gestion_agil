@@ -5,8 +5,26 @@ const fs = require('fs');
 
 const router = express.Router();
 
-<<<<<<< HEAD
-// GET /api/alumnos1/clases (Debe ir antes de /:id)
+const storage = multer.diskStorage({
+  destination: (_req, _file, cb) => {
+    cb(null, 'uploads/alumnos/');
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const { nombre = '', apellidoP = '', apellidoM = '' } = req.body;
+    const nombreCompleto = `${nombre}_${apellidoP}_${apellidoM}`.trim().replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+    cb(null, `${nombreCompleto}${ext}`);
+  }
+});
+
+const upload = multer({ storage });
+
+const MEMBRESIAS_FIJAS = [
+  { id_membresia: 1, nombre: 'Mensual', precio: 400, descripcion: 'Acceso completo por 1 mes' },
+  { id_membresia: 2, nombre: 'Trimestral', precio: 1050, descripcion: 'Acceso completo por 3 meses' },
+  { id_membresia: 3, nombre: 'Anual', precio: 3600, descripcion: 'Acceso completo por 12 meses' },
+];
+
 router.get('/clases', async (req, res) => {
   try {
     const [rows] = await req.pool.promise().query('SELECT id_clase, nombre, dias_semana, hora_inicio, hora_fin FROM Clases WHERE activo = 1');
@@ -16,59 +34,10 @@ router.get('/clases', async (req, res) => {
   }
 });
 
-//BACK PARA LA TABLA DE ALUMNOS 
-=======
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => {
-    cb(null, 'uploads/alumnos/');
-  },
-
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-
-    const {
-      nombre = '',
-      apellidoP = '',
-      apellidoM = ''
-    } = req.body;
-
-    const nombreCompleto = `${nombre}_${apellidoP}_${apellidoM}`
-      .trim()
-      .replace(/\s+/g, '_')
-      .replace(/[^a-zA-Z0-9_]/g, '');
-
-    cb(null, `${nombreCompleto}${ext}`);
-  }
-});
-
-const upload = multer({ storage });
-
-const MEMBRESIAS_FIJAS = [
-  {
-    id_membresia: 1,
-    nombre: 'Mensual',
-    precio: 400,
-    descripcion: 'Acceso completo por 1 mes'
-  },
-  {
-    id_membresia: 2,
-    nombre: 'Trimestral',
-    precio: 1050,
-    descripcion: 'Acceso completo por 3 meses'
-  },
-  {
-    id_membresia: 3,
-    nombre: 'Anual',
-    precio: 3600,
-    descripcion: 'Acceso completo por 12 meses'
-  },
-];
-
 router.get('/membresias', (_req, res) => {
   res.json({ membresias: MEMBRESIAS_FIJAS });
 });
 
->>>>>>> origin/Erick05
 router.get('/', async (req, res) => {
   try {
     const [rows] = await req.pool.promise().query(`
@@ -80,47 +49,22 @@ router.get('/', async (req, res) => {
         c.telefono,
         c.correo_electronico,
         c.estado,
-<<<<<<< HEAD
         cl.id_clase,
-=======
         c.id_membresia,
         c.foto_path,
         me.nombre AS membresia_nombre,
->>>>>>> origin/Erick05
+
         cl.nombre AS disciplina,
         cl.dias_semana,
         cl.hora_inicio,
         cl.hora_fin,
         MAX(h.fecha_pago) AS fechaPago
       FROM Cliente c
-<<<<<<< HEAD
       LEFT JOIN Membresia me ON c.id_membresia = me.id_membresia
       LEFT JOIN Clases cl ON me.id_clase = cl.id_clase
       LEFT JOIN Historial_pago h ON h.id_cliente = c.id_cliente
-      GROUP BY c.id_cliente, c.nombre, c.apellidoP, c.apellidoM, c.telefono, c.correo_electronico, c.estado, cl.id_clase, cl.nombre, cl.dias_semana, cl.hora_inicio, cl.hora_fin
-=======
-      LEFT JOIN Membresia me
-        ON c.id_membresia = me.id_membresia
-      LEFT JOIN Clases cl
-        ON me.id_clase = cl.id_clase
-      LEFT JOIN Historial_pago h
-        ON h.id_cliente = c.id_cliente
-      GROUP BY
-        c.id_cliente,
-        c.nombre,
-        c.apellidoP,
-        c.apellidoM,
-        c.telefono,
-        c.correo_electronico,
-        c.estado,
-        c.id_membresia,
-        c.foto_path,
-        me.nombre,
-        cl.nombre,
-        cl.dias_semana,
-        cl.hora_inicio,
-        cl.hora_fin
->>>>>>> origin/Erick05
+      GROUP BY c.id_cliente, c.nombre, c.apellidoP, c.apellidoM, c.telefono, c.correo_electronico, c.estado, cl.id_clase, c.id_membresia, c.foto_path, me.nombre, cl.nombre, cl.dias_semana, cl.hora_inicio, cl.hora_fin
+
       ORDER BY c.nombre
     `);
 
@@ -280,228 +224,96 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
-// CREAR NUEVO ALUMNO
-router.post('/', async (req, res) => {
-  const { nombre, apellidoP, apellidoM, telefono, correo_electronico, estado, id_clase } = req.body;
+router.post('/', upload.single('foto'), async (req, res) => {
+  const { nombre, apellidoP, apellidoM, telefono, correo_electronico, estado, id_clase, id_membresia } = req.body;
+  const foto_path = req.file ? req.file.filename : null;
   const connection = await req.pool.promise().getConnection();
   try {
     await connection.beginTransaction();
 
-    let id_membresia = null;
+    let final_id_membresia = id_membresia || null;
     
-    if (id_clase) {
+    if (id_clase && !final_id_membresia) {
       const [membresias] = await connection.query('SELECT id_membresia FROM Membresia WHERE id_clase = ? LIMIT 1', [id_clase]);
       if (membresias.length > 0) {
-        id_membresia = membresias[0].id_membresia;
+        final_id_membresia = membresias[0].id_membresia;
       } else {
         const [resMem] = await connection.query(
           'INSERT INTO Membresia (nombre, precio, tipo, duracion, id_clase) VALUES (?, ?, ?, ?, ?)',
           ['Membresia Básica', 0, 'Mensual', 1, id_clase]
         );
-        id_membresia = resMem.insertId;
+        final_id_membresia = resMem.insertId;
       }
     }
 
     const [result] = await connection.query(
-      'INSERT INTO Cliente (nombre, apellidoP, apellidoM, telefono, correo_electronico, estado, id_membresia) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [nombre, apellidoP, apellidoM || null, telefono, correo_electronico, estado || 'activo', id_membresia]
+      'INSERT INTO Cliente (nombre, apellidoP, apellidoM, telefono, correo_electronico, estado, id_membresia, foto_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [nombre, apellidoP, apellidoM || null, telefono, correo_electronico, estado || 'activo', final_id_membresia, foto_path]
     );
 
     await connection.commit();
     res.status(201).json({ message: 'Alumno creado correctamente', id: result.insertId });
-=======
-router.post('/', upload.single('foto'), async (req, res) => {
-  const {
-    nombre,
-    apellidoP,
-    apellidoM,
-    telefono,
-    correo_electronico,
-    estado,
-    id_membresia
-  } = req.body;
-
-  const foto_path = req.file ? req.file.filename : null;
-
-  try {
-    const [result] = await req.pool.promise().query(
-      `
-      INSERT INTO Cliente
-      (
-        nombre,
-        apellidoP,
-        apellidoM,
-        telefono,
-        correo_electronico,
-        estado,
-        id_membresia,
-        foto_path
-      )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-      `,
-      [
-        nombre,
-        apellidoP,
-        apellidoM || null,
-        telefono,
-        correo_electronico,
-        estado || 'activo',
-        id_membresia || null,
-        foto_path
-      ]
-    );
-
-    res.status(201).json({
-      message: 'Alumno creado correctamente',
-      id: result.insertId
-    });
-
->>>>>>> origin/Erick05
   } catch (err) {
     await connection.rollback();
     console.error(err);
-<<<<<<< HEAD
     res.status(500).json({ message: 'Error al crear alumno', error: err.message });
   } finally {
     connection.release();
-=======
-
-    res.status(500).json({
-      message: 'Error al crear alumno',
-      error: err.message
-    });
->>>>>>> origin/Erick05
   }
 });
 
 router.put('/:id', upload.single('foto'), async (req, res) => {
   const id = req.params.id;
-<<<<<<< HEAD
-  const { nombre, apellidoP, apellidoM, telefono, correo_electronico, estado, id_clase } = req.body;
+  const { nombre, apellidoP, apellidoM, telefono, correo_electronico, estado, id_clase, id_membresia } = req.body;
   const connection = await req.pool.promise().getConnection();
   try {
     await connection.beginTransaction();
 
-    let id_membresia = null;
+    let final_id_membresia = id_membresia || null;
     
-    if (id_clase) {
+    if (id_clase && !final_id_membresia) {
       const [membresias] = await connection.query('SELECT id_membresia FROM Membresia WHERE id_clase = ? LIMIT 1', [id_clase]);
       if (membresias.length > 0) {
-        id_membresia = membresias[0].id_membresia;
+        final_id_membresia = membresias[0].id_membresia;
       } else {
         const [resMem] = await connection.query(
           'INSERT INTO Membresia (nombre, precio, tipo, duracion, id_clase) VALUES (?, ?, ?, ?, ?)',
           ['Membresia Básica', 0, 'Mensual', 1, id_clase]
         );
-        id_membresia = resMem.insertId;
+        final_id_membresia = resMem.insertId;
       }
     }
 
-    const [result] = await connection.query(
-      'UPDATE Cliente SET nombre = ?, apellidoP = ?, apellidoM = ?, telefono = ?, correo_electronico = ?, estado = ?, id_membresia = ? WHERE id_cliente = ?',
-      [nombre, apellidoP, apellidoM || null, telefono, correo_electronico, estado || 'activo', id_membresia, id]
-    );
-=======
-
-  const {
-    nombre,
-    apellidoP,
-    apellidoM,
-    telefono,
-    correo_electronico,
-    estado,
-    id_membresia
-  } = req.body;
-
-  try {
     let query;
     let params;
 
     if (req.file) {
-      query = `
-        UPDATE Cliente
-        SET
-          nombre = ?,
-          apellidoP = ?,
-          apellidoM = ?,
-          telefono = ?,
-          correo_electronico = ?,
-          estado = ?,
-          id_membresia = ?,
-          foto_path = ?
-        WHERE id_cliente = ?
-      `;
-
-      params = [
-        nombre,
-        apellidoP,
-        apellidoM || null,
-        telefono,
-        correo_electronico,
-        estado || 'activo',
-        id_membresia || null,
-        req.file.filename,
-        id
-      ];
-
+      query = 'UPDATE Cliente SET nombre = ?, apellidoP = ?, apellidoM = ?, telefono = ?, correo_electronico = ?, estado = ?, id_membresia = ?, foto_path = ? WHERE id_cliente = ?';
+      params = [nombre, apellidoP, apellidoM || null, telefono, correo_electronico, estado || 'activo', final_id_membresia, req.file.filename, id];
     } else {
-      query = `
-        UPDATE Cliente
-        SET
-          nombre = ?,
-          apellidoP = ?,
-          apellidoM = ?,
-          telefono = ?,
-          correo_electronico = ?,
-          estado = ?,
-          id_membresia = ?
-        WHERE id_cliente = ?
-      `;
-
-      params = [
-        nombre,
-        apellidoP,
-        apellidoM || null,
-        telefono,
-        correo_electronico,
-        estado || 'activo',
-        id_membresia || null,
-        id
-      ];
+      query = 'UPDATE Cliente SET nombre = ?, apellidoP = ?, apellidoM = ?, telefono = ?, correo_electronico = ?, estado = ?, id_membresia = ? WHERE id_cliente = ?';
+      params = [nombre, apellidoP, apellidoM || null, telefono, correo_electronico, estado || 'activo', final_id_membresia, id];
     }
 
-    const [result] = await req.pool.promise().query(query, params);
->>>>>>> origin/Erick05
-
+    const [result] = await connection.query(query, params);
     await connection.commit();
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({
-        message: 'Alumno no encontrado'
-      });
+      return res.status(404).json({ message: 'Alumno no encontrado' });
     }
 
-    res.json({
-      message: 'Alumno actualizado correctamente'
-    });
-
+    res.json({ message: 'Alumno actualizado correctamente' });
   } catch (err) {
     await connection.rollback();
     console.error(err);
-<<<<<<< HEAD
     res.status(500).json({ message: 'Error al actualizar alumno', error: err.message });
   } finally {
     connection.release();
-=======
-
-    res.status(500).json({
-      message: 'Error al actualizar alumno',
-      error: err.message
-    });
->>>>>>> origin/Erick05
   }
 });
+
+
+
 
 router.delete('/:id', async (req, res) => {
   const id = req.params.id;
@@ -544,11 +356,8 @@ router.delete('/:id', async (req, res) => {
     );
 
     await connection.commit();
-<<<<<<< HEAD
-=======
-
     connection.release();
->>>>>>> origin/Erick05
+
 
     if (result.affectedRows === 0) {
       return res.status(404).json({
@@ -562,23 +371,10 @@ router.delete('/:id', async (req, res) => {
 
   } catch (err) {
     await connection.rollback();
-<<<<<<< HEAD
+    connection.release();
     console.error(err);
     res.status(500).json({ message: 'Error al eliminar alumno', error: err.message });
-  } finally {
-    connection.release();
-=======
-
-    connection.release();
-
-    console.error(err);
-
-    res.status(500).json({
-      message: 'Error al eliminar alumno',
-      error: err.message
-    });
->>>>>>> origin/Erick05
   }
 });
 
-module.exports = router;
+module.exports = router;
