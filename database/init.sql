@@ -1,5 +1,13 @@
--- Usamos la base de datos que definimos en Docker
+-- Usamos la base de datos que definas (appdb o BD_StudioFlow)
+CREATE DATABASE IF NOT EXISTS appdb;
 USE appdb;
+
+-- 1. Desactivar llaves para limpieza (opcional si vas a re-ejecutar todo)
+SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS Asistencia, Historial_pago, Historial_gastos, Cliente, Membresia, Clases, Maestros, Empleado;
+SET FOREIGN_KEY_CHECKS = 1;
+
+-- TABLA: Empleado
 CREATE TABLE IF NOT EXISTS Empleado (
     id_empleado INT PRIMARY KEY AUTO_INCREMENT,
     usuario VARCHAR(50) UNIQUE NOT NULL,
@@ -63,10 +71,11 @@ CREATE TABLE IF NOT EXISTS Cliente (
     id_membresia INT,
     uid_huella VARCHAR(50) UNIQUE,
     estado VARCHAR(20) DEFAULT 'activo',
+    foto_path VARCHAR(255) DEFAULT NULL, -- <--- Columna extra por si guardas fotos
     FOREIGN KEY (id_membresia) REFERENCES Membresia(id_membresia)
 );
 
--- TABLA: Historial_pago
+-- TABLA: Historial_pago (CORREGIDA CON LOS CAMPOS QUE FALTABAN)
 CREATE TABLE IF NOT EXISTS Historial_pago (
     id_pago INT PRIMARY KEY AUTO_INCREMENT,
     id_cliente INT NOT NULL,
@@ -75,6 +84,8 @@ CREATE TABLE IF NOT EXISTS Historial_pago (
     fecha_fin DATETIME NOT NULL,
     estado VARCHAR(20) DEFAULT 'pendiente',
     monto_pagado FLOAT NOT NULL,
+    metodo_pago VARCHAR(50) DEFAULT 'Efectivo', -- <--- IMPORTANTE: ESTO FALTABA
+    referencia VARCHAR(100) DEFAULT NULL,      -- <--- IMPORTANTE: ESTO FALTABA
     fecha_pago DATETIME DEFAULT CURRENT_TIMESTAMP,
     id_empleado_registro INT,
     FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente),
@@ -89,7 +100,7 @@ CREATE TABLE IF NOT EXISTS Asistencia (
     id_membresia INT NOT NULL,
     id_clase INT NOT NULL,
     fecha_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
-    alerta_mostrada VARCHAR(100), -- 'ninguna', 'proximo_vencimiento', 'pago_vencido'
+    alerta_mostrada VARCHAR(100),
     FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente),
     FOREIGN KEY (id_membresia) REFERENCES Membresia(id_membresia),
     FOREIGN KEY (id_clase) REFERENCES Clases(id_clase)
@@ -106,21 +117,12 @@ CREATE TABLE IF NOT EXISTS Historial_gastos (
     FOREIGN KEY (id_empleado_registro) REFERENCES Empleado(id_empleado)
 );
 
--- ============================================
--- ÍNDICES PARA OPTIMIZACIÓN
--- ============================================
--- Optimiza búsquedas de clientes por su número de tarjeta
+-- ÍNDICES
 CREATE INDEX idx_cliente_huella ON Cliente(uid_huella);
---  Acelera consultas filtradas por fecha/hora en la tabla de asistencias
 CREATE INDEX idx_asistencia_fecha ON Asistencia(fecha_hora);
 CREATE INDEX idx_historial_pago_fechas ON Historial_pago(fecha_inicio, fecha_fin);
 CREATE INDEX idx_historial_gastos_fecha ON Historial_gastos(fecha_pago);
 
--- ============================================
--- DATOS INICIALES
--- ============================================
-
+-- USUARIO ADMIN
 INSERT INTO Empleado (usuario, contrasenia, nombre, apellidoP, rol)
 VALUES ('admin', 'admin', 'Administrador', 'Master', 'admin');
-
-SELECT * FROM Empleado;

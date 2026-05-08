@@ -205,9 +205,9 @@ body {
     border-radius: 50%;
 }
 
-.status-dot.success { background-color: #00e676; }
-.status-dot.danger { background-color: #ff3d00; }
-.status-dot.deuda { background-color: #f2ff00; }
+.status-dot.activo { background-color: #00e676; }
+.status-dot.inactivo { background-color: #ff3d00; }
+.status-dot.con-deuda { background-color: #f2ff00; }
 
 /* Botón Nuevo Alumno */
 .bottom-action {

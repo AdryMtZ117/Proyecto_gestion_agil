@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../style/Finanzas2.css'; // Nuestro nuevo archivo de estilos
+import '../style/Finanzas2.css';
+
+const API = "http://localhost:3000";
 
 import NotificationBell from '../components/NotificationBell';
 
 function Finanzas2() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
+<<<<<<< HEAD
     return (
         <main className="main-content finanzas2-layout">
             
@@ -20,116 +23,207 @@ function Finanzas2() {
                 </div>
                 <NotificationBell />
             </header>
+=======
+  const [concepto, setConcepto] = useState("Luz eléctrica");
+  const [monto, setMonto] = useState("");
+  const [ticket, setTicket] = useState(null);
+  const [gastos, setGastos] = useState([]);
+  const [fecha, setFecha] = useState(new Date().toISOString().split('T')[0]);
+  const [busqueda, setBusqueda] = useState("");
+>>>>>>> origin/Erick05
 
-            {/* Formulario superior */}
-            <div className="gastos-form-section">
-                <div className="form-group">
-                    <label>Concepto:</label>
-                    <div className="custom-select-gastos">
-                        <select defaultValue="Luz eléctrica">
-                            <option value="Luz eléctrica">Luz eléctrica</option>
-                            <option value="Pago a maestro">Pago a maestro</option>
-                            <option value="Servicio WiFi">Servicio WiFi</option>
-                            <option value="Otro...">Otro...</option>
-                        </select>
-                        <i className="fas fa-chevron-down"></i>
-                    </div>
-                </div>
+  const [mesActual, setMesActual] = useState(new Date().getMonth());
+  const [anioActual, setAnioActual] = useState(new Date().getFullYear());
 
-                <div className="form-group">
-                    <label>Monto:</label>
-                    <input type="text" className="input-monto-gastos" placeholder="$0.00" />
-                </div>
+  const meses = [
+    "Enero","Febrero","Marzo","Abril","Mayo","Junio",
+    "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
+  ];
 
-                <div className="form-group" style={{ alignSelf: 'flex-end' }}>
-                    <button className="btn-upload-ticket">
-                        <i className="fas fa-file-upload"></i> Cargar Ticket
-                    </button>
-                </div>
-            </div>
+  useEffect(() => {
+    document.body.style.backgroundColor = "#CFF5D8";
+    return () => document.body.style.backgroundColor = "";
+  }, []);
 
-            {/* Grid inferior: Calendario y Tabla */}
-            <div className="gastos-grid">
-                
-                {/* Columna Izquierda: Calendario */}
-                <div className="calendar-column">
-                    <h3 className="column-title">Fecha:</h3>
-                    
-                    <div className="mock-calendar-green">
-                        <p className="cal-subtitle">Select date</p>
-                        <div className="cal-header">
-                            <h4>Mon, Aug 17</h4>
-                            <i className="fas fa-pen"></i>
-                        </div>
-                        
-                        <div className="cal-month-nav">
-                            <span>August 2025 <i className="fas fa-caret-down"></i></span>
-                            <div className="cal-arrows">
-                                <i className="fas fa-chevron-left"></i>
-                                <i className="fas fa-chevron-right"></i>
-                            </div>
-                        </div>
+  useEffect(() => { cargar(); }, []);
 
-                        <div className="cal-grid weekdays">
-                            <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
-                        </div>
-                        <div className="cal-grid days">
-                            <span></span><span></span><span>1</span><span>2</span><span>3</span><span>4</span>
-                            <span className="current-day">5</span><span>6</span><span>7</span><span>8</span>
-                            <span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span>
-                            <span>15</span><span>16</span><span className="selected-day">17</span><span>18</span>
-                            <span>19</span><span>20</span><span>21</span><span>22</span><span>23</span><span>24</span>
-                            <span>25</span><span>26</span><span>27</span><span>28</span><span>29</span><span>30</span>
-                            <span>31</span>
-                        </div>
-                        
-                        <div className="cal-footer">
-                            <span>Cancel</span>
-                            <span>OK</span>
-                        </div>
-                    </div>
-                </div>
+  const cargar = async () => {
+    const res = await fetch(`${API}/api/finanzas/listar-gastos`);
+    const data = await res.json();
+    setGastos(data);
+  };
 
-                {/* Columna Derecha: Buscador y Tabla */}
-                <div className="table-column">
-                    <h3 className="column-title">Filtrado por fecha:</h3>
-                    
-                    <div className="search-bar-gastos">
-                        <i className="fas fa-search"></i>
-                        <input type="text" placeholder="Buscar" />
-                    </div>
+  const guardar = async () => {
+    if (!monto) return alert("Falta monto");
 
-                    <div className="table-wrapper-gastos">
-                        <table className="gastos-table">
-                            <thead>
-                                <tr>
-                                    <th>Concepto</th>
-                                    <th>Monto</th>
-                                    <th>Fecha</th>
-                                    <th>Ticket</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {[1, 2, 3, 4, 5].map((item) => (
-                                    <tr key={item}>
-                                        <td>Concepto</td>
-                                        <td>$0.00</td>
-                                        <td>15/08/2026</td>
-                                        <td>
-                                            <button className="btn-descargar">
-                                                <i className="fas fa-file-pdf" style={{ color: '#d32f2f' }}></i> Descargar
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+    const form = new FormData();
+    form.append("concepto", concepto);
+    form.append("monto_pagado", monto);
+    form.append("id_empleado", 1);
+    if (ticket) form.append("ticket", ticket);
 
-            </div>
-        </main>
-    );
+    await fetch(`${API}/api/finanzas/registrar-gasto`, {
+      method: "POST",
+      body: form
+    });
+
+    setMonto("");
+    setTicket(null);
+    cargar();
+  };
+
+  const filtrar = async () => {
+    if (!fecha) return cargar();
+    const res = await fetch(`${API}/api/finanzas/filtrar-gastos?fecha=${fecha}`);
+    const data = await res.json();
+    setGastos(data);
+  };
+
+  const cambiarMes = (offset) => {
+    let m = mesActual + offset;
+    let a = anioActual;
+    if (m < 0) { m = 11; a--; }
+    if (m > 11) { m = 0; a++; }
+    setMesActual(m);
+    setAnioActual(a);
+  };
+
+  const renderDias = () => {
+    const dias = new Date(anioActual, mesActual + 1, 0).getDate();
+    const arr = [];
+    for (let i = 1; i <= dias; i++) {
+      const f = `${anioActual}-${String(mesActual+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
+      arr.push(
+        <button
+          key={i}
+          className={`day-btn ${fecha === f ? 'active-day' : ''}`}
+          onClick={() => setFecha(f)}
+        >
+          {i}
+        </button>
+      );
+    }
+    return arr;
+  };
+
+  const abrirTicket = (ruta) => {
+    window.open(`${API}/${ruta.replace(/^\/+/, '')}`, "_blank");
+  };
+
+  return (
+    <main className="finanzas2-layout">
+      <header className="top-bar-finanzas2">
+        <button className="btn-back-simple" onClick={() => navigate('/finanzas')}>
+          ←
+        </button>
+        <h2 className="section-title">Registro de Gastos</h2>
+        <div className="notification">
+          <span className="bell-icon">🔔</span>
+        </div>
+      </header>
+
+      <section className="gastos-form-section">
+        <div className="form-group">
+          <label>Concepto</label>
+          <select value={concepto} onChange={(e) => setConcepto(e.target.value)}>
+            <option>Luz eléctrica</option>
+            <option>Pago maestro</option>
+            <option>WiFi</option>
+            <option>Otro</option>
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label>Monto</label>
+          <input
+            type="number"
+            placeholder="$ 0.00"
+            value={monto}
+            onChange={(e) => setMonto(e.target.value)}
+          />
+        </div>
+
+        <div className="form-row-actions">
+          <div className="upload-wrapper">
+            <label className="btn-action-green">
+              📎 Cargar Ticket
+              <input
+                type="file"
+                hidden
+                onChange={(e) => setTicket(e.target.files[0])}
+              />
+            </label>
+            {ticket && <span className="file-name-text">{ticket.name}</span>}
+          </div>
+
+          <button className="btn-action-green" onClick={guardar}>
+            Guardar
+          </button>
+        </div>
+      </section>
+
+      <div className="gastos-grid">
+        <aside className="calendar-box">
+          <h3 className="column-title">Fecha: {fecha}</h3>
+          <div className="calendar-nav">
+            <button onClick={() => cambiarMes(-1)}>‹</button>
+            <span>{meses[mesActual]} {anioActual}</span>
+            <button onClick={() => cambiarMes(1)}>›</button>
+          </div>
+          <div className="calendar-real">
+            {renderDias()}
+          </div>
+          <button className="btn-filter-calendar" onClick={filtrar}>
+            Filtrar Fecha
+          </button>
+        </aside>
+
+        <section className="table-container">
+          <input
+            className="search-bar-gastos"
+            placeholder="Buscar por concepto..."
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+          />
+          <table className="gastos-table">
+            <thead>
+              <tr>
+                <th>Folio</th>
+                <th>Concepto</th>
+                <th>Monto</th>
+                <th>Fecha</th>
+                <th>Ticket</th>
+              </tr>
+            </thead>
+            <tbody>
+              {gastos
+                .filter(g => g.concepto?.toLowerCase().includes(busqueda.toLowerCase()))
+                /* ORDENAR POR FOLIO (id_gasto) DE MENOR A MAYOR */
+                .sort((a, b) => Number(a.id_gasto) - Number(b.id_gasto))
+                .map(g => (
+                <tr key={g.id_gasto}>
+                  <td>#{g.id_gasto}</td>
+                  <td>{g.concepto}</td>
+                  <td className="monto-cell">${g.monto_pagado}</td>
+                  <td>{g.fecha}</td>
+                  <td>
+                    {g.factura ? (
+                      <button
+                        className="btn-ver-ticket"
+                        onClick={() => abrirTicket(g.factura)}
+                      >
+                        Ver Ticket
+                      </button>
+                    ) : <span className="no-ticket">Sin archivo</span>}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      </div>
+    </main>
+  );
 }
 
 export default Finanzas2;
