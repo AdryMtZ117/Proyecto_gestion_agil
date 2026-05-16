@@ -2,7 +2,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 
 function ProtectedRoute({ children, adminOnly = false }) {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     const location = useLocation();
 
     if (!token) {
@@ -14,8 +14,8 @@ function ProtectedRoute({ children, adminOnly = false }) {
         
         // Comprobar expiración
         if (decoded.exp * 1000 < Date.now()) {
-            localStorage.removeItem('token');
-            localStorage.removeItem('usuario');
+            sessionStorage.removeItem('token');
+            sessionStorage.removeItem('usuario');
             return <Navigate to="/login" replace />;
         }
 
@@ -27,7 +27,7 @@ function ProtectedRoute({ children, adminOnly = false }) {
         return children;
     } catch (error) {
         console.error("Error decoding token:", error);
-        localStorage.removeItem('token');
+        sessionStorage.removeItem('token');
         return <Navigate to="/login" replace />;
     }
 }

@@ -24,7 +24,7 @@ function Finanzas() {
   const [pagos, setPagos] = useState([]);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (token) {
       try {
         const decoded = jwtDecode(token);

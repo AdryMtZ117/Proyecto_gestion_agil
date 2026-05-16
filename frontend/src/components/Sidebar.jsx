@@ -11,7 +11,7 @@ function Sidebar() {
     const profileDropdownRef = useRef(null);
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
         if (token) {
             try {
                 const decoded = jwtDecode(token);
@@ -66,8 +66,8 @@ function Sidebar() {
     const isActive = (path) => location.pathname === path ? 'active' : '';
 
     const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('usuario');
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('usuario');
         navigate('/login');
     };
 
