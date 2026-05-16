@@ -33,7 +33,13 @@ function Dashboard() {
 
         fetch('http://localhost:3000/api/dashboard')
             .then(res => res.json())
-            .then(data => setDashboard(data))
+            .then(data => {
+                if (data.error) {
+                    console.error("Error en datos del dashboard:", data.error, data.details);
+                } else {
+                    setDashboard(data);
+                }
+            })
             .catch(err => console.error("Error dashboard:", err));
     }, []);
 
