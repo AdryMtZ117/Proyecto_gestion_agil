@@ -285,6 +285,8 @@ body {
     border-radius: 12px;
     width: 400px;
     max-width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 

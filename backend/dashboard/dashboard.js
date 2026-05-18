@@ -13,7 +13,8 @@ router.get('/', async (req, res) => {
       [asistenciasHoyResult],
       [ingresosMesResult],
       [saldoPendienteResult],
-      [ingresosGastosResult],
+      [ingresosResult],
+      [gastosResult],
       [proximasClasesResult]
     ] = await Promise.all([
 
@@ -39,34 +40,23 @@ router.get('/', async (req, res) => {
         WHERE estado='pendiente'
       `),
 
-      //Ingresos/Gastos diarios del mes actual
+      //Ingresos diarios del mes actual
       poolPromise.query(`
-        WITH RECURSIVE dias AS (
-          SELECT 1 AS dia
-          UNION ALL
-          SELECT dia + 1 FROM dias WHERE dia < DAY(LAST_DAY(CURDATE()))
-        )
-        SELECT 
-          d.dia,
-          IFNULL(p.ingresos,0) AS ingresos,
-          IFNULL(g.gastos,0) AS gastos
-        FROM dias d
-        LEFT JOIN (
-          SELECT DAY(fecha_pago) AS dia, SUM(monto_pagado) AS ingresos
-          FROM Historial_pago
-          WHERE estado='pagado'
-            AND MONTH(fecha_pago)=MONTH(CURDATE())
-            AND YEAR(fecha_pago)=YEAR(CURDATE())
-          GROUP BY DAY(fecha_pago)
-        ) p ON d.dia = p.dia
-        LEFT JOIN (
-          SELECT DAY(fecha_pago) AS dia, SUM(monto_pagado) AS gastos
-          FROM Historial_gastos
-          WHERE MONTH(fecha_pago)=MONTH(CURDATE())
-            AND YEAR(fecha_pago)=YEAR(CURDATE())
-          GROUP BY DAY(fecha_pago)
-        ) g ON d.dia = g.dia
-        ORDER BY d.dia
+        SELECT DAY(fecha_pago) AS dia, SUM(monto_pagado) AS ingresos
+        FROM Historial_pago
+        WHERE estado='pagado'
+          AND MONTH(fecha_pago)=MONTH(CURDATE())
+          AND YEAR(fecha_pago)=YEAR(CURDATE())
+        GROUP BY DAY(fecha_pago)
+      `),
+
+      //Gastos diarios del mes actual
+      poolPromise.query(`
+        SELECT DAY(fecha_pago) AS dia, SUM(monto_pagado) AS gastos
+        FROM Historial_gastos
+        WHERE MONTH(fecha_pago)=MONTH(CURDATE())
+          AND YEAR(fecha_pago)=YEAR(CURDATE())
+        GROUP BY DAY(fecha_pago)
       `),
 
       //Próximas 5 clases
@@ -80,6 +70,22 @@ router.get('/', async (req, res) => {
         LIMIT 5
       `)
     ]);
+
+    // Procesar ingresos y gastos por día
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth() + 1;
+    const diasEnMes = new Date(currentYear, currentMonth, 0).getDate();
+
+    const ingresosGastosResult = [];
+    for (let i = 1; i <= diasEnMes; i++) {
+      const ingresoDia = ingresosResult.find(row => row.dia === i);
+      const gastoDia = gastosResult.find(row => row.dia === i);
+      ingresosGastosResult.push({
+        dia: i,
+        ingresos: ingresoDia ? ingresoDia.ingresos : 0,
+        gastos: gastoDia ? gastoDia.gastos : 0
+      });
+    }
 
     // --- Enviar JSON al front
     res.json({

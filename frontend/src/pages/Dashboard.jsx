@@ -20,6 +20,9 @@ function Dashboard() {
     const chartRef = useRef(null);
     const chartInstance = useRef(null);
 
+    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    const mesActual = meses[new Date().getMonth()];
+
     useEffect(() => {
         const token = sessionStorage.getItem('token');
         if (token) {
@@ -119,7 +122,7 @@ function Dashboard() {
                             <canvas ref={chartRef}></canvas>
                         </div>
                         <p className="chart-label">
-                            Mes: {new Date().toLocaleString('es-ES', { month: 'long' })}
+                            Mes: {mesActual}
                         </p>
                     </div>
                 )}
