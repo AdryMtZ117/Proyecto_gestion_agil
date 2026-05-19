@@ -25,7 +25,7 @@ function Clases() {
         'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
         'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
     ];
-    const diasSemana = ['D', 'L', 'M', 'X', 'J', 'V', 'S'];
+    const diasSemana = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
     const nombresDiasSemanaCompleto = [
         'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'
     ];
@@ -125,7 +125,12 @@ function Clases() {
     return (
         <main className="main-content clases-page-wrapper">
             <header className="top-bar-full">
-                <button className="btn-agregar-clase" onClick={() => setShowModal(true)}>
+                <button className="btn-agregar-clase" onClick={() => {
+                    axios.get('http://localhost:3000/api/clases/maestros')
+                        .then(res => setMaestrosList(res.data))
+                        .catch(err => console.error("Error al refrescar maestros", err));
+                    setShowModal(true);
+                }}>
                     <i className="fas fa-plus"></i> Agregar Clase
                 </button>
                 <NotificationBell />

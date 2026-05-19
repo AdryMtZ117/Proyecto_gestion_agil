@@ -68,6 +68,8 @@ function Alumnos() {
   }, []);
 
   const handleOpenNew = () => {
+    fetchClases();
+    fetchMembresias();
     setFormData({ nombre:'', apellidoP:'', apellidoM:'', telefono:'',
       correo_electronico:'', estado:'activo', id_membresia:'', id_clase: '', foto:null });
     setEditingId(null);

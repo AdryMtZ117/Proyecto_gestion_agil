@@ -7,7 +7,7 @@ router.get('/maestros', async (req, res) => {
     const [rows] = await req.pool.promise().query(`SELECT id_maestro, Nombre, apellidoP, apellidoM FROM Maestros`);
     const maestros = rows.map(r => ({
       id: r.id_maestro,
-      nombre: `${r.Nombre} ${r.apellidoP} ${r.apellidoM || ''}`.trim()
+      nombre: `${r.Nombre || r.nombre || ''} ${r.apellidoP || r.apellidop || ''} ${r.apellidoM || r.apellidom || ''}`.trim()
     }));
     res.json(maestros);
   } catch(err) {
