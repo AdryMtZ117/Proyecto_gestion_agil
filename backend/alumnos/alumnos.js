@@ -97,8 +97,9 @@ router.get('/', async (req, res) => {
           : null,
     }));
 
+    const [clases] = await req.pool.promise().query('SELECT nombre FROM Clases WHERE activo = 1');
     const nombres = [...new Set(alumnos.map(a => a.nombre))];
-    const disciplinas = [...new Set(alumnos.map(a => a.disciplina))];
+    const disciplinas = [...new Set([...clases.map(c => c.nombre), ...alumnos.map(a => a.disciplina)])].filter(d => d && d !== 'No asignada');
     const estatus = ['activo', 'inactivo', 'con deuda'];
 
     res.json({
@@ -233,19 +234,28 @@ router.post('/', upload.single('foto'), async (req, res) => {
   try {
     await connection.beginTransaction();
 
-    let final_id_membresia = id_membresia || null;
-    
-    if (id_clase && !final_id_membresia) {
-      const [membresias] = await connection.query('SELECT id_membresia FROM Membresia WHERE id_clase = ? LIMIT 1', [id_clase]);
+    let final_id_membresia = null;
+
+    if (id_clase) {
+      const MEMBRESIAS_FIJAS = [
+        { id_membresia: 1, nombre: 'Mensual', precio: 400, tipo: 'Mensual', duracion: 1 },
+        { id_membresia: 2, nombre: 'Trimestral', precio: 1050, tipo: 'Trimestral', duracion: 3 },
+        { id_membresia: 3, nombre: 'Anual', precio: 3600, tipo: 'Anual', duracion: 12 },
+      ];
+      const template = MEMBRESIAS_FIJAS.find(m => m.id_membresia == id_membresia) || { nombre: 'Membresia Básica', precio: 0, tipo: 'Mensual', duracion: 1 };
+
+      const [membresias] = await connection.query('SELECT id_membresia FROM Membresia WHERE id_clase = ? AND nombre = ? LIMIT 1', [id_clase, template.nombre]);
       if (membresias.length > 0) {
         final_id_membresia = membresias[0].id_membresia;
       } else {
         const [resMem] = await connection.query(
           'INSERT INTO Membresia (nombre, precio, tipo, duracion, id_clase) VALUES (?, ?, ?, ?, ?)',
-          ['Membresia Básica', 0, 'Mensual', 1, id_clase]
+          [template.nombre, template.precio, template.tipo, template.duracion, id_clase]
         );
         final_id_membresia = resMem.insertId;
       }
+    } else if (id_membresia) {
+      final_id_membresia = id_membresia;
     }
 
     const [result] = await connection.query(
@@ -271,19 +281,28 @@ router.put('/:id', upload.single('foto'), async (req, res) => {
   try {
     await connection.beginTransaction();
 
-    let final_id_membresia = id_membresia || null;
-    
-    if (id_clase && !final_id_membresia) {
-      const [membresias] = await connection.query('SELECT id_membresia FROM Membresia WHERE id_clase = ? LIMIT 1', [id_clase]);
+    let final_id_membresia = null;
+
+    if (id_clase) {
+      const MEMBRESIAS_FIJAS = [
+        { id_membresia: 1, nombre: 'Mensual', precio: 400, tipo: 'Mensual', duracion: 1 },
+        { id_membresia: 2, nombre: 'Trimestral', precio: 1050, tipo: 'Trimestral', duracion: 3 },
+        { id_membresia: 3, nombre: 'Anual', precio: 3600, tipo: 'Anual', duracion: 12 },
+      ];
+      const template = MEMBRESIAS_FIJAS.find(m => m.id_membresia == id_membresia) || { nombre: 'Membresia Básica', precio: 0, tipo: 'Mensual', duracion: 1 };
+
+      const [membresias] = await connection.query('SELECT id_membresia FROM Membresia WHERE id_clase = ? AND nombre = ? LIMIT 1', [id_clase, template.nombre]);
       if (membresias.length > 0) {
         final_id_membresia = membresias[0].id_membresia;
       } else {
         const [resMem] = await connection.query(
           'INSERT INTO Membresia (nombre, precio, tipo, duracion, id_clase) VALUES (?, ?, ?, ?, ?)',
-          ['Membresia Básica', 0, 'Mensual', 1, id_clase]
+          [template.nombre, template.precio, template.tipo, template.duracion, id_clase]
         );
         final_id_membresia = resMem.insertId;
       }
+    } else if (id_membresia) {
+      final_id_membresia = id_membresia;
     }
 
     let query;

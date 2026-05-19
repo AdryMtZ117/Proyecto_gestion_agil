@@ -24,7 +24,7 @@ router.post('/scan', async (req, res) => {
       FROM Cliente c
       LEFT JOIN Membresia me ON c.id_membresia = me.id_membresia
       LEFT JOIN Clases cl ON me.id_clase = cl.id_clase
-      WHERE c.id_cliente = ? OR c.uid_huella = ? OR c.nombre LIKE ?
+      WHERE CAST(c.id_cliente AS CHAR) = ? OR c.uid_huella = ? OR c.nombre LIKE ?
       LIMIT 1
     `, [query, query, `%${query}%`]);
 
